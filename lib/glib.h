@@ -5,13 +5,15 @@
 #define GLIB_H
 
 #include "winwindow.h"
-
+#define false 0x0
+#define true 0x1
 #define isVisible_macro 0b00000001
 #define isResizable     0b00000010
+
 typedef unsigned int state;
 typedef unsigned char bool;
 
-typedef struct{
+typedef struct point{
     int x, y;
 }position, point;
 
@@ -71,6 +73,6 @@ typedef struct gwindow{
     widget* hovered_widget;
 
     point last_mouse;
-}gwindow;
+}gwindow; //global | general (root, source) widget
 
 #endif
