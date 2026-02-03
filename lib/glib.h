@@ -9,6 +9,7 @@
 #define isVisible_macro 0b00000001
 #define isResizable     0b00000010
 typedef unsigned int state;
+typedef unsigned char bool;
 
 typedef struct{
     int x, y;
@@ -66,11 +67,10 @@ typedef struct gwindow{
 
     int is_running;
 
-
     widget* focused_widget;
     widget* hovered_widget;
 
-    position last_mouse;
+    point last_mouse;
 }gwindow;
 
 #endif
