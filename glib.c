@@ -6,10 +6,10 @@ void widget_get_global_position(
     widget *__widget, //self rect
     point* __out
 ){
+    if (!__widget || !__out)return;
+
     __out->x = 0;
     __out->y = 0;
-
-    if (!__widget || !__out)return;
 
     widget *currentw = __widget;
 
@@ -38,11 +38,21 @@ void widget_add_child(widget *parent, widget *child){
     if (parent->child_capacity == 0){
         parent->child_capacity = 4;
         parent->children = calloc(parent->child_capacity, sizeof(widget*));
+        if (!parent->children){
+            parent->child_capacity = 0;
+            return;
+        }
     }
     else if(parent->child_count >= parent->child_capacity){
-        parent->child_capacity *= 2;
-        parent->children = realloc(parent->children, sizeof(widget*) * parent->child_capacity);
+        int new_capacity = parent->child_capacity * 2;
+        widget **tmp = realloc(parent->children, (size_t)new_capacity * sizeof(widget*));
+        if (!tmp) {
+            return; // realloc failed, keep old buffer
+        }
+        parent->children = tmp;
+        parent->child_capacity = new_capacity;
     }
+
     parent->children[parent->child_count++] = child;
     child->parent = parent;
     return;
@@ -84,8 +94,8 @@ bool point_in_widget(widget *__widget, point __p){
 
 
     return (
-        __p.x >= global_rectangle.position.x && __p.x <= global_rectangle.dimensions.width + global_rectangle.position.x &&
-        __p.y >= global_rectangle.position.y && __p.y <= global_rectangle.dimensions.height + global_rectangle.position.y
+        __p.x >= global_rectangle.position.x && __p.x < global_rectangle.dimensions.width + global_rectangle.position.x &&
+        __p.y >= global_rectangle.position.y && __p.y < global_rectangle.dimensions.height + global_rectangle.position.y
     );
 }
 
@@ -117,5 +127,35 @@ void widget_dispatch_event(widget *__widget, event *__e){
     if (__widget->handle_event){
         __widget->handle_event(__widget, __e);
     }
+    return;
+}
+
+void widget_destroy_tree(widget *__widget){
+    if(!__widget)return;
+
+    for(int i = __widget->child_count - 1; i>=0; --i){
+        if(__widget->children[i]){
+            widget_destroy_tree(__widget->children[i]);
+        }
+    }
+
+    if (__widget->destroy)__widget->destroy(__widget);
+
+    if (__widget->children) {
+        free(__widget->children);
+        __widget->children = NULL;
+    }
+
+    if (__widget->name) {
+        free(__widget->name);
+        __widget->name = NULL;
+    }
+
+    if (__widget->user_data) {
+        free(__widget->user_data);
+        __widget->user_data = NULL;
+    }
+
+    free(__widget);
     return;
 }
