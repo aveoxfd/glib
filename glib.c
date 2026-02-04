@@ -1,7 +1,6 @@
 #include "glib.h"
 #include <stdlib.h>
 
-
 void widget_get_global_position(
     widget *__widget, //self rect
     point* __out
@@ -154,6 +153,12 @@ void widget_destroy_tree(widget *__widget){
     if (__widget->user_data) {
         free(__widget->user_data);
         __widget->user_data = NULL;
+    }
+
+    if(__widget->a_bound.nodes){
+        free(__widget->a_bound.nodes);
+        __widget->a_bound.nodes = NULL;
+        __widget->a_bound.nodes_count = 0;
     }
 
     free(__widget);

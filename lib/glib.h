@@ -36,6 +36,11 @@ typedef struct{
     int handled;        
 }event;
 
+typedef struct arbitrary_bound{
+    point *nodes;
+    int nodes_count
+}arbitrary_bound;
+
 typedef struct widget;
 typedef struct gwindow;
 
@@ -43,9 +48,11 @@ typedef void (*widget_paint_func)(widget*, gwindow*);
 typedef void (*widget_event_func)(widget*, event*);
 typedef void (*widget_update_func)(widget*);
 typedef void (*widget_destroy_func)(widget*);
+typedef bool (*widget_point_in_widget)(widget*, point); //if point in widget bounds
 
 typedef struct widget{
     rectangle bounds;
+    arbitrary_bound a_bound;
     state state_flags;
 
     widget** children;
@@ -57,6 +64,7 @@ typedef struct widget{
     widget_event_func handle_event;
     widget_update_func update;
     widget_destroy_func destroy;
+    widget_point_in_widget check;
 
     void* user_data;
     char* name;
