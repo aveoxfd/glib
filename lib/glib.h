@@ -17,7 +17,7 @@ typedef struct point{
     int x, y;
 }position, point;
 
-typedef struct{
+typedef struct size{
     int width;
     int height;
 }size;

@@ -3,18 +3,18 @@
 
 void widget_get_global_position(
     widget *__widget, //self rect
-    point* __out
+    point* _out
 ){
-    if (!__widget || !__out)return;
+    if (!__widget || !_out)return;
 
-    __out->x = 0;
-    __out->y = 0;
+    _out->x = 0;
+    _out->y = 0;
 
     widget *currentw = __widget;
 
     while (currentw){
-        __out->x += currentw->bounds.position.x;
-        __out->y += currentw->bounds.position.y;
+        _out->x += currentw->bounds.position.x;
+        _out->y += currentw->bounds.position.y;
         currentw = currentw->parent;
     }
     return;
@@ -22,13 +22,13 @@ void widget_get_global_position(
 
 void widget_get_global_rect(
     widget *__widget, //self rect
-    rectangle *__out
+    rectangle *_out
 ){
-    if (!__widget || !__out)return;
+    if (!__widget || !_out)return;
 
-    widget_get_global_position(__widget, &__out->position);
-    __out->dimensions.width = __widget->bounds.dimensions.width;
-    __out->dimensions.height = __widget->bounds.dimensions.height;
+    widget_get_global_position(__widget, &_out->position);
+    _out->dimensions.width = __widget->bounds.dimensions.width;
+    _out->dimensions.height = __widget->bounds.dimensions.height;
 }
 
 void widget_add_child(widget *parent, widget *child){
@@ -163,4 +163,33 @@ void widget_destroy_tree(widget *__widget){
 
     free(__widget);
     return;
+}
+
+bool point_in_arbitrary_bound(widget *__widget, point __p){
+    static int step_count = 100;
+    unsigned char touch_count;
+    if (!__widget->a_bound.nodes)return false;
+
+    point widget_global_position;
+    widget_get_global_position(__widget, &widget_global_position);
+
+    point __local_p = {
+        __p.x - widget_global_position.x,
+        __p.y - widget_global_position.y
+    };
+
+    for (int i = 0, j = __widget->a_bound.nodes_count - 1; i < __widget->a_bound.nodes_count; j = i++){ //<--
+        point p1 = __widget->a_bound.nodes[j]; //end
+        point p2 = __widget->a_bound.nodes[i]; //head
+
+        double k = (p2.y - p1.y)/(p2.x - p2.x);
+
+        //if (
+        //    
+        //)
+    }
+
+
+    if (touch_count % 2 != 0)return true;
+    else return false;
 }
