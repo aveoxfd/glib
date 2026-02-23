@@ -247,7 +247,7 @@ void widget_destroy_tree(widget *__widget){
     return;
 }
 
-bool point_in_arbitrary_bound(
+bool point_in_arbitrary_bound( //<==================
     widget *__widget, point __p // global position point
 ){
     static int step_count = 100;
@@ -263,7 +263,7 @@ bool point_in_arbitrary_bound(
 
     for (int i = 0; i < __widget->a_bound.nodes_count; ++i){
 
-        int j = (i+1) % __widget->a_bound.nodes_count;
+        int j = (i+1) % __widget->a_bound.nodes_count; //cycle
 
         point node_start = __widget->a_bound.nodes[i];
         point node_end = __widget->a_bound.nodes[j];
@@ -273,13 +273,14 @@ bool point_in_arbitrary_bound(
             .y = node_end.y - node_start.y
         };
 
-        if ((node_start.y > local_p.y) != (node_end.y > local_p.y)) {
+        if ((node_start.y > local_p.y) != (node_end.y > local_p.y)) { //local_p.y is located strictly between the y of the beginning and the end of the edge
+
             if (local_line.y != 0) {
-                
-                double x_intersect = node_start.x + 
+
+                double x_intersect = node_start.x + //the x coordinate of the intersection of the ray with the straight line of the edge
                     (double)(local_p.y - node_start.y) * local_line.x / local_line.y;
 
-                if (local_p.x < x_intersect) {
+                if (local_p.x < x_intersect) { //if point is left
                     touch_count++;
                 }
             }
