@@ -1,5 +1,6 @@
 #include "glib.h"
 #include "memory.h"
+#include "winwindow.h"
 #include <stdlib.h>
 
 //========================================
@@ -251,7 +252,7 @@ bool point_in_arbitrary_bound( //<==================
     widget *__widget, point __p // global position point
 ){
     static int step_count = 100;
-    unsigned char touch_count;
+    unsigned char touch_count = 0;
     if (!__widget->a_bound.nodes)return false;
 
     point widget_global_position = widget_get_global_position(__widget);
