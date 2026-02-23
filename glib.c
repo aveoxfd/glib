@@ -32,7 +32,7 @@ typedef struct event{
 
 typedef struct arbitrary_bound{
     point *nodes;
-    int nodes_count
+    int nodes_count;
 }arbitrary_bound, arbitrary_bound;
 
 typedef struct widget;
@@ -84,34 +84,34 @@ typedef struct gwindow{
 }gwindow, gwindow_t; //global | general (root, source) widget
 //========================================
 
-void widget_get_global_position(
-    widget *__widget, //self rect
-    point* _out
+point widget_get_global_position(
+    widget *__widget //self rect
 ){
-    if (!__widget || !_out)return;
-
-    _out->x = 0;
-    _out->y = 0;
+    point _out = {0, 0};
+    if (!__widget)return _out;
 
     widget *currentw = __widget;
 
     while (currentw){
-        _out->x += currentw->bounds.position.x;
-        _out->y += currentw->bounds.position.y;
+        _out.x += currentw->bounds.position.x;
+        _out.y += currentw->bounds.position.y;
         currentw = currentw->parent;
     }
-    return;
+    return _out;
 }
 
-void widget_get_global_rect(
-    widget *__widget, //self rect
-    rectangle *_out
+rectangle widget_get_global_rect(
+    widget *__widget //self rect
 ){
-    if (!__widget || !_out)return;
+    rectangle _out = {{0, 0}, {0, 0}};;
+    if (!__widget)return _out;
 
-    widget_get_global_position(__widget, &_out->position);
-    _out->dimensions.width = __widget->bounds.dimensions.width;
-    _out->dimensions.height = __widget->bounds.dimensions.height;
+    point pos = widget_get_global_position(__widget);
+    _out.position = pos;
+    _out.dimensions.width = __widget->bounds.dimensions.width;
+    _out.dimensions.height = __widget->bounds.dimensions.height;
+
+    return _out;
 }
 
 void widget_add_child(widget *parent, widget *child){ //create child in parent
@@ -172,10 +172,7 @@ void widget_add_destroyf(widget *__widget, widget_destroy_func __destroy_functio
 
 bool point_in_widget(widget *__widget, point __p){ //point in box bound
     if (!__widget)return false;
-    rectangle global_rectangle;
-
-    widget_get_global_rect(__widget, &global_rectangle);
-
+    rectangle global_rectangle = widget_get_global_rect(__widget);
 
     return (
         __p.x >= global_rectangle.position.x && __p.x < global_rectangle.dimensions.width + global_rectangle.position.x &&
@@ -190,19 +187,19 @@ void widget_paint_tree(widget *__widget, gwindow *general_window){
         __widget->paint(__widget, general_window);
     }
 
-    for (int i = 0; i<__widget->child_count; ++i){
+    for (int i = 0; i < __widget->child_count; ++i){
         if (__widget->children[i])widget_paint_tree(__widget->children[i], general_window);
     }
     return;
 }
 
-void widget_dispatch_event(widget *__widget, event *__e){
+void widget_dispatch_event(widget *__widget, event *__e){ //point in box bound widget
     if (!__widget || !__e)return;
 
-    for (int i = __widget->child_count - 1; i>=0; --i){
-        widget *ch = __widget->children[i];
+    for (int i = __widget->child_count - 1; i >= 0; --i){
+        widget *ch = __widget->children[i]; //current child
          if(!ch) continue;
-         if(point_in_widget(ch, __e->mouse_position)){
+         if(point_in_widget(ch, __e->mouse_position) || point_in_arbitrary_bound(ch, __e->mouse_position)){
             widget_dispatch_event(ch, __e);
             if (__e->handled)return;
          }
@@ -250,31 +247,43 @@ void widget_destroy_tree(widget *__widget){
     return;
 }
 
-bool point_in_arbitrary_bound(widget *__widget, point __p){
+bool point_in_arbitrary_bound(
+    widget *__widget, point __p // global position point
+){
     static int step_count = 100;
     unsigned char touch_count;
     if (!__widget->a_bound.nodes)return false;
 
-    point widget_global_position;
-    widget_get_global_position(__widget, &widget_global_position);
+    point widget_global_position = widget_get_global_position(__widget);
 
-    point __local_p = {
-        __p.x - widget_global_position.x,
-        __p.y - widget_global_position.y
+    point local_p = {
+        .x = __p.x - widget_global_position.x,
+        .y = __p.y - widget_global_position.y
     };
 
-    for (int i = 0, j = __widget->a_bound.nodes_count - 1; i < __widget->a_bound.nodes_count; j = i++){ //<--
-        point p1 = __widget->a_bound.nodes[j]; //end
-        point p2 = __widget->a_bound.nodes[i]; //head
+    for (int i = 0; i < __widget->a_bound.nodes_count; ++i){
 
-        double k = (p2.y - p1.y)/(p2.x - p2.x);
+        int j = (i+1) % __widget->a_bound.nodes_count;
 
-        //if (
-        //    
-        //)
+        point node_start = __widget->a_bound.nodes[i];
+        point node_end = __widget->a_bound.nodes[j];
+
+        point local_line = {
+            .x = node_end.x - node_start.x,
+            .y = node_end.y - node_start.y
+        };
+
+        if ((node_start.y > local_p.y) != (node_end.y > local_p.y)) {
+            if (local_line.y != 0) {
+                
+                double x_intersect = node_start.x + 
+                    (double)(local_p.y - node_start.y) * local_line.x / local_line.y;
+
+                if (local_p.x < x_intersect) {
+                    touch_count++;
+                }
+            }
+        }
     }
-
-
-    if (touch_count % 2 != 0)return true;
-    else return false;
+    return (touch_count % 2 != 0);
 }
