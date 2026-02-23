@@ -1,6 +1,8 @@
 #ifndef WINWINDOW_H
 #define WINWINDOW_H
 
+#define W_STATIC
+
 #ifdef __cplusplus
 extern "C"{
 #endif

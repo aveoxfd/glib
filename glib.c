@@ -1,5 +1,88 @@
 #include "glib.h"
+#include "memory.h"
 #include <stdlib.h>
+
+//========================================
+
+typedef unsigned int state;
+typedef unsigned char bool;
+
+typedef struct point{
+    int x, y;
+}position, point;
+
+typedef struct size{
+    int width;
+    int height;
+}size, size_tp;
+
+typedef struct rectangle{
+    point position;
+    size dimensions;
+}rectangle, rectangle_t;
+
+typedef struct event{
+    point mouse_position;
+    int mouse_button;   
+    int key_code;
+    int modifiers;      
+    void* source;       
+    int handled;        
+}event, event_t;
+
+typedef struct arbitrary_bound{
+    point *nodes;
+    int nodes_count
+}arbitrary_bound, arbitrary_bound;
+
+typedef struct widget;
+typedef struct gwindow;
+typedef struct event;
+typedef struct rectangle;
+typedef struct size;
+typedef struct point;
+
+typedef void (*widget_paint_func)(widget*, gwindow*);
+typedef void (*widget_event_func)(widget*, event*);
+typedef void (*widget_update_func)(widget*);
+typedef void (*widget_destroy_func)(widget*);
+typedef bool (*widget_point_in_widget)(widget*, point); //if point in widget bounds
+
+typedef struct widget{
+    rectangle bounds;       //bound
+    arbitrary_bound a_bound;//arbitrary bound
+    state state_flags;      //flag var
+
+
+    widget** children;  //array of children
+    widget* parent;     //parent
+    int child_count;    //ptr
+    int child_capacity; //ptr
+
+    widget_paint_func paint;        //render function
+    widget_event_func handle_event; //handle function
+    widget_update_func update;      //update function
+    widget_destroy_func destroy;    //destroy func
+    widget_point_in_widget check;   //check if point in bound
+
+    void* user_data;                //user data memory
+    char* name;                     //name (id) of widget
+}widget, widget_t;
+
+
+typedef struct gwindow{
+    Window* native_window;  //pointer to general window
+
+    widget *root_widget;    //general widget
+
+    int is_running;
+
+    widget* focused_widget; //active widget
+    widget* hovered_widget; //
+
+    point last_mouse;       //position if mouse
+}gwindow, gwindow_t; //global | general (root, source) widget
+//========================================
 
 void widget_get_global_position(
     widget *__widget, //self rect
@@ -31,7 +114,7 @@ void widget_get_global_rect(
     _out->dimensions.height = __widget->bounds.dimensions.height;
 }
 
-void widget_add_child(widget *parent, widget *child){
+void widget_add_child(widget *parent, widget *child){ //create child in parent
     if (!parent || !child)return;
 
     if (parent->child_capacity == 0){
@@ -39,6 +122,7 @@ void widget_add_child(widget *parent, widget *child){
         parent->children = calloc(parent->child_capacity, sizeof(widget*));
         if (!parent->children){
             parent->child_capacity = 0;
+            //error msg
             return;
         }
     }
@@ -46,13 +130,14 @@ void widget_add_child(widget *parent, widget *child){
         int new_capacity = parent->child_capacity * 2;
         widget **tmp = realloc(parent->children, (size_t)new_capacity * sizeof(widget*));
         if (!tmp) {
+            //error msg
             return; // realloc failed, keep old buffer
         }
         parent->children = tmp;
         parent->child_capacity = new_capacity;
     }
-
-    parent->children[parent->child_count++] = child;
+    *(parent->children + parent->child_count++) = child;
+    //parent->children[parent->child_count++] = child; // *(parent->children+parent->child_count++) = child
     child->parent = parent;
     return;
 }
@@ -85,7 +170,7 @@ void widget_add_destroyf(widget *__widget, widget_destroy_func __destroy_functio
     return;
 }
 
-bool point_in_widget(widget *__widget, point __p){
+bool point_in_widget(widget *__widget, point __p){ //point in box bound
     if (!__widget)return false;
     rectangle global_rectangle;
 
