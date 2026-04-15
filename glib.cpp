@@ -1,6 +1,7 @@
 #include "Include/nwind/nwind.h"
 #include <iostream>
 #include <string>
+#include <windows.h>
 
 #define MAX_EVENT_NUM 10
 
@@ -26,11 +27,7 @@ struct rectangle{
 typedef rectangle rectangle, rectangle_t, rect, rect_t;
 
 /*
-event might be activated by clicking on widget (mouse event);
-our goal is create an universally event activator 
 
-widget:
-event on click -> 
 */
 //==================================================================================================
 
@@ -104,15 +101,36 @@ class СWindow{
     Window *window;
     Widget *main_widget;
 
+    static void mouse_button_callback(Window* wnd, int button, char pressed){
+        Mouse::button = button;
+        POINT p;                        //<-----------
+        GetCursorPos(&p);               //<-----------
+        ScreenToClient((HWND)wnd, &p);  //<-----------
+        Mouse::pos.x = p.x;
+        Mouse::pos.y = p.y;
+
+        //got to end children (tree parsing)
+    }
+
     public:
-    СWindow(const int width, const int height){
+    СWindow(const int width, const int height): main_widget(nullptr), window(nullptr){
         window = WindowCreate(width, height, "glib_window");
         if (!window){
             std::cout<<"WindowCreate: error of creating window.\n";
         }
+        WindowSetMouseButtonCallback(window, mouse_button_callback);
     }
     ~СWindow(){
         WindowDestroy(window);
+    }
+
+    void set_widget(Widget *_widget){
+        if(_widget){
+            if (main_widget){
+                //TODO!!!
+            }
+            main_widget = _widget;
+        }
     }
 };
 int main(){
