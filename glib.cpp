@@ -9,6 +9,11 @@ struct position{
 };
 typedef position point, point_t, position, position_t;
 
+namespace Mouse{
+    inline position pos;
+    inline int button;
+}
+
 struct size{
     int width, height;
 };
@@ -31,16 +36,16 @@ event on click ->
 
 class Event{ //Event func
     private:
-    typedef bool(*EventFunction)(Widget* sender, void* user_data);
+    typedef void(*EventFunction)(Widget* sender, void* user_data);
 
-    EventFunction function;
+    EventFunction e_function;
     void* user_data;
 
     public:
-    Event(EventFunction function = nullptr, void* ud = nullptr): function(function), user_data(ud){};
+    Event(EventFunction function = nullptr, void* ud = nullptr): e_function(function), user_data(ud){};
     void Activate(Widget *sender){
-        if (function){
-            function(sender, user_data);
+        if (e_function){
+            e_function(sender, user_data);
         }
     }
 };
@@ -51,23 +56,48 @@ class Widget{
     Widget *parent;
     Widget **children;
 
+    friend position get_real_postion(Widget *_widget);
+
     rect_t bound;
 
-    Event *e_array[MAX_EVENT_NUM];
-    int e_count; //number of events in e_array
+    Event *onclick_event;
+    Event *inbound_event;
+
+    bool contains(position pos){
+        position real_pos = get_real_postion(this);
+        return pos.x > real_pos.x && pos.x <= bound.size.width + real_pos.x 
+        && pos.y > real_pos.y && pos.y <= bound.size.height;
+    }
+    //int e_count; //number of events in e_array
 
     //render widget
     //event func
     //event_handler
     
     public:
-    Widget(rect_t bound): parent(nullptr), children(nullptr), bound(bound), e_count(0){};
+    Widget(rect_t bound): parent(nullptr), children(nullptr), bound(bound), onclick_event(nullptr), inbound_event(nullptr){};
 
+    void on_click(Event *e){
+        if (e)onclick_event = e;
+    }
 
+    void in_bound(Event *e){
+        if (e)inbound_event = e;
+    }
 
     //func add_event
     //func_del_event
 };
+
+position get_real_postion(Widget *_widget){
+    Widget *curr = _widget;
+    position real_position = {0};
+    for (; curr->parent != nullptr; curr = curr->parent){
+        real_position.x += curr->bound.pos.x;
+        real_position.y += curr->bound.pos.y;
+    }
+    return real_position;
+}
 
 class СWindow{
     private:
