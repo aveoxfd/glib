@@ -2,6 +2,8 @@
 #include <iostream>
 #include <string>
 
+#define MAX_EVENT_NUM 10
+
 struct position{
     int x, y;
 };
@@ -10,7 +12,7 @@ typedef position point, point_t, position, position_t;
 struct size{
     int width, height;
 };
-typedef size size, size_t;
+typedef size size;
 
 struct rectangle{
     position pos;
@@ -21,15 +23,27 @@ typedef rectangle rectangle, rectangle_t, rect, rect_t;
 /*
 event might be activated by clicking on widget (mouse event);
 our goal is create an universally event activator 
+
+widget:
+event on click -> 
 */
 //==================================================================================================
 
 class Event{ //it might be deleted in future
     private:
-    typedef void(*event_function)(void); //event behaviour; what will happen when event is activated
-    std::string e_id;
+    typedef bool(*EventCallback)(Widget* sender, void* user_data);
+
+    EventCallback Callback_function;
+    void* user_data;
+    Widget *depend;
 
     public:
+    Event(EventCallback Callback = nullptr, void* ud = nullptr): Callback_function(Callback), user_data(ud){};
+    void Activate(Widget *sender){
+        if (Callback_function){
+            Callback_function(sender, user_data);
+        }
+    }
 };
 typedef Event Event_t, E, E_t, event, event_t, e, e_t;
 
@@ -40,15 +54,17 @@ class Widget{
 
     rect_t bound;
 
-    Event **e_array;
+    Event *e_array[MAX_EVENT_NUM];
+    int e_count; //number of events in e_array
 
     //render widget
     //event func
     //event_handler
     
     public:
-    Widget(rect_t bound): bound(bound){
-    }
+    Widget(rect_t bound): parent(nullptr), children(nullptr), bound(bound), e_count(0){};
+
+
 
     //func add_event
     //func_del_event
@@ -70,3 +86,7 @@ class СWindow{
         WindowDestroy(window);
     }
 };
+int main(){
+    Widget wid(rect_t{position{0, 0}, size{100, 100}});
+    return 0;
+}
