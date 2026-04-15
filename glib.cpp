@@ -29,19 +29,18 @@ event on click ->
 */
 //==================================================================================================
 
-class Event{ //it might be deleted in future
+class Event{ //Event func
     private:
-    typedef bool(*EventCallback)(Widget* sender, void* user_data);
+    typedef bool(*EventFunction)(Widget* sender, void* user_data);
 
-    EventCallback Callback_function;
+    EventFunction function;
     void* user_data;
-    Widget *depend;
 
     public:
-    Event(EventCallback Callback = nullptr, void* ud = nullptr): Callback_function(Callback), user_data(ud){};
+    Event(EventFunction function = nullptr, void* ud = nullptr): function(function), user_data(ud){};
     void Activate(Widget *sender){
-        if (Callback_function){
-            Callback_function(sender, user_data);
+        if (function){
+            function(sender, user_data);
         }
     }
 };
