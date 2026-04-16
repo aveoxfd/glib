@@ -26,6 +26,8 @@ struct rectangle{
 };
 typedef rectangle rectangle, rectangle_t, rect, rect_t;
 
+class Widget;
+
 /*
 
 */
@@ -35,13 +37,13 @@ class Event{ //Event type
     private:
     typedef void(*EventFunction)(Widget* sender);
 
-    EventFunction e_function;
+    EventFunction event_function;
 
     public:
-    Event(EventFunction function = nullptr): e_function(function){};
+    Event(EventFunction function = nullptr): event_function(function){};
     void activate(Widget *sender){
-        if (e_function){
-            e_function(sender);
+        if (event_function){
+            event_function(sender);
         }
     }
 };
