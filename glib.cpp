@@ -31,18 +31,17 @@ typedef rectangle rectangle, rectangle_t, rect, rect_t;
 */
 //==================================================================================================
 
-class Event{ //Event func
+class Event{ //Event type
     private:
-    typedef void(*EventFunction)(Widget* sender, void* user_data);
+    typedef void(*EventFunction)(Widget* sender);
 
     EventFunction e_function;
-    void* user_data;
 
     public:
-    Event(EventFunction function = nullptr, void* ud = nullptr): e_function(function), user_data(ud){};
-    void Activate(Widget *sender){
+    Event(EventFunction function = nullptr): e_function(function){};
+    void activate(Widget *sender){
         if (e_function){
-            e_function(sender, user_data);
+            e_function(sender);
         }
     }
 };
@@ -125,12 +124,6 @@ class СWindow{
     }
 
     void set_widget(Widget *_widget){
-        if(_widget){
-            if (main_widget){
-                //TODO!!!
-            }
-            main_widget = _widget;
-        }
     }
 };
 int main(){
