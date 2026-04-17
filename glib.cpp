@@ -78,7 +78,7 @@ class Widget{
     Widget **children;
     int children_count = 0;
 
-    friend position get_real_postion(Widget *_widget);
+    friend position get_real_position(Widget *_widget);
 
     rect_t bound;
 
@@ -86,7 +86,9 @@ class Widget{
     Event *inbound_event;
 
     bool contains(position pos){
-        position real = get_real_postion(this);
+        position real = get_real_position(this);
+        //std::cout<<"The real position of widget is <"<<real.x<<", "<<real.y<<">\n";
+        //std::cout<<"bound: <"<<bound.size.width<<", "<<bound.size.height<<">\n ";
         return pos.x >= real.x && pos.x < bound.size.width + real.x 
         && pos.y >= real.y && pos.y < bound.size.height + real.y;
     }
@@ -109,7 +111,8 @@ class Widget{
     }
 
     void MousePressHandler(int button){
-        if (button == 1 && onclick_event){
+        //std::cout << "MousePressHandler: button=" << button << std::endl;
+        if (button == 0 && onclick_event){
             onclick_event->activate(this);
         }
         return;
@@ -122,9 +125,11 @@ class Widget{
         return;
     }
 
-    //position of object in the bound of last layer of wodget's tree
+    //position of object in the bound of last layer of widget's tree
     Widget* search_match(position pos){
-        if (!contains(pos))return nullptr;
+        if (!contains(pos)){
+            return nullptr;
+        }
         for (int i = children_count - 1; i >= 0; --i){
             Widget* found = children[i]->search_match(pos);
             if (found) return found;
@@ -137,7 +142,7 @@ class Widget{
     //func_del_event
 };
 
-position get_real_postion(Widget *_widget){
+position get_real_position(Widget *_widget){
     position real_position = _widget->bound.pos;
     for (Widget *curr = _widget; curr->parent != nullptr; curr = curr->parent){
         real_position.x += curr->bound.pos.x;
@@ -161,7 +166,7 @@ class CWindow{
         WindowSetMouseButtonCallback(window, mouse_button_callback);
     }
     ~CWindow(){
-        WindowDestroy(window);
+        //WindowDestroy(window); need to be fixed
     }
 
     Widget* get_root_widget(){
@@ -179,20 +184,38 @@ void mouse_button_callback(Window* wnd, int button, char pressed){
     Mouse::button = button;
     POINT p;                        //<-----------
     GetCursorPos(&p);               //<-----------
-    ScreenToClient((HWND)wnd, &p);  //<-----------
-    Mouse::pos.x = p.x;
-    Mouse::pos.y = p.y;
-    //got to end children (tree parsing)
+    HWND hwnd = WindowFromPoint(p); //hwnd under cursor
+    RECT rect;
+    GetWindowRect(hwnd, &rect);
+    Mouse::pos.x = p.x - rect.left;
+    Mouse::pos.y = p.y - rect.top;
+    
+    //std::cout << "Mouse click at (" << Mouse::pos.x << ", " << Mouse::pos.y << "); button = " << button << std::endl;
+    //go to end children (tree parsing)
 
     CWindow* window = findwindow(wnd);
+    if (window == nullptr)return;
     Widget* root = window->get_root_widget();
+    if(root == nullptr)return;
     Widget* target = root->search_match(Mouse::pos);
+    if(target == nullptr)return;
 
     target->MousePressHandler(Mouse::button);
     return;
 }
 
 int main(){
-    Widget wid(rect_t{position{0, 0}, size{100, 100}});
+    CWindow w1(800, 600);
+    Widget wid(rect_t{position{200, 200}, size{200, 100}});
+    Event *ev = new Event([](Widget *wid)->void{
+        std::cout<<"Hello world!\n";
+    });
+    wid.on_click(ev);
+    w1.set_widget(&wid);
+
+    MSG msg = {};
+    while (MessageProcess()) {
+
+    }
     return 0;
 }
