@@ -79,11 +79,13 @@ class Widget{
     int children_count = 0;
 
     friend position get_real_position(Widget *_widget);
+    typedef void(*render_function)(Widget *_widget);
 
     rect_t bound;
 
     Event *onclick_event;
     Event *inbound_event;
+    render_function render_func;
 
     bool contains(position pos){
         position real = get_real_position(this);
@@ -104,10 +106,17 @@ class Widget{
 
     void on_click(Event *e){
         if (e)onclick_event = e;
+        return;
     }
 
     void in_bound(Event *e){
         if (e)inbound_event = e;
+        return;
+    }
+
+    void set_render_function(render_function function){
+        render_func = function;
+        return;
     }
 
     void MousePressHandler(int button){
@@ -135,6 +144,12 @@ class Widget{
             if (found) return found;
         }
         return this;
+    }
+
+    void render(){
+        if(render_func){
+            render_func(this);
+        }
     }
 
 
