@@ -108,10 +108,6 @@ class Widget{
         if (e)inbound_event = e;
     }
 
-    int get_children_count(){
-        return children_count;
-    }
-
     void MousePressHandler(int button){
         if (button == 1 && onclick_event){
             onclick_event->activate(this);
