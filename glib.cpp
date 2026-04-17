@@ -32,6 +32,7 @@ struct WindowEntry{
 };
 typedef WindowEntry WindowEntry, WE;
 void mouse_button_callback(Window* wnd, int button, char pressed);
+void mouse_move_callback(Window *wnd, int key, char pressed);
 //==================================================================================================
 
 #define WINDOWS_ARRAY_COUNT_MAX 3
@@ -163,6 +164,7 @@ class CWindow{
         }
         registerwindow(window, (CWindow*)this);
         WindowSetMouseButtonCallback(window, mouse_button_callback);
+        WindowSetMouseMoveCallback(window, mouse_move_callback);
     }
     ~CWindow(){
         //WindowDestroy(window); need to be fixed
@@ -203,11 +205,38 @@ void mouse_button_callback(Window* wnd, int button, char pressed){
     return;
 }
 
+void mouse_move_callback(Window *wnd, int key, char pressed){
+    POINT p;                        //<-----------
+    GetCursorPos(&p);               //<-----------
+    HWND hwnd = WindowFromPoint(p); //hwnd under cursor
+    RECT rect;
+    GetWindowRect(hwnd, &rect);
+    Mouse::pos.x = p.x - rect.left;
+    Mouse::pos.y = p.y - rect.top;
+    
+    //std::cout << "Mouse click at (" << Mouse::pos.x << ", " << Mouse::pos.y << "); button = " << button << std::endl;
+    //go to end children (tree parsing)
+
+    CWindow* window = findwindow(wnd);
+    if (window == nullptr)return;
+    Widget* root = window->get_root_widget();
+    if(root == nullptr)return;
+    Widget* target = root->search_match(Mouse::pos);
+    if(target == nullptr)return;
+
+    target->MouseInboundHandler();
+    return;
+}
+
 int main(){
     CWindow w1(800, 600);
-    Widget wid(rect_t{position{200, 200}, size{500, 500}});
+    Widget wid(rect_t{position{0, 0}, size{100, 100}});
     wid.on_click(new Event([](Widget *wid)->void{
         std::cout<<"Hello world!\n";
+    }));
+
+    wid.in_bound(new Event([](Widget *wid)->void{
+        std::cout<<"in bound!\n";
     }));
     w1.set_widget(&wid);
 
