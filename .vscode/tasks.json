@@ -12,9 +12,11 @@
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe",
                 "-L", "Include/nwind",
+				"Include/nwind/nwind.lib",
                 "-I", "Include/nwind",
-                "Include/nwind/nwind.lib",
-                "-l", "gdi32"
+				"-I", "structures",
+                "-l", "gdi32",
+				
             ],
             "options": {
                 "cwd": "${fileDirname}"
