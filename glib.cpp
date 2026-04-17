@@ -30,6 +30,7 @@ struct WindowEntry{
     Window *native;
     CWindow *owner;
 };
+
 typedef WindowEntry WindowEntry, WE;
 void mouse_button_callback(Window* wnd, int button, char pressed);
 void mouse_move_callback(Window *wnd, int key, char pressed);
@@ -77,6 +78,7 @@ class Widget{
     Widget *parent;
     Widget **children;
     int children_count = 0;
+    Window *depend;
 
     friend position get_real_position(Widget *_widget);
     typedef void(*render_function)(Widget *_widget);
@@ -85,6 +87,7 @@ class Widget{
 
     Event *onclick_event;
     Event *inbound_event;
+    Event *outbound_event;
     render_function render_func;
 
     bool contains(position pos){
@@ -104,6 +107,10 @@ class Widget{
     Widget(rect_t bound): parent(nullptr), children(nullptr), bound(bound), onclick_event(nullptr), inbound_event(nullptr){};
     ~Widget(){}
 
+    rect_t get_rect(){
+        return bound;
+    }
+
     void on_click(Event *e){
         if (e)onclick_event = e;
         return;
@@ -112,6 +119,18 @@ class Widget{
     void in_bound(Event *e){
         if (e)inbound_event = e;
         return;
+    }
+
+    void out_bound(Event *e){
+        if (e)outbound_event = e;
+    }
+
+    Window* get_depended_window(void){
+        return depend;
+    }
+
+    void set_depended_window(Window *depend){
+        if(depend)this->depend = depend;
     }
 
     void set_render_function(render_function function){
@@ -132,6 +151,12 @@ class Widget{
             inbound_event->activate(this);
         }
         return;
+    }
+
+    void MouseOutboundHandler(){
+        if (outbound_event){
+            outbound_event->activate(this);
+        }
     }
 
     //position of object in the bound of last layer of widget's tree
@@ -192,21 +217,22 @@ class CWindow{
 
     void set_widget(Widget *_widget){
         main_widget = _widget;
+
+        _widget->set_depended_window(window);
         return;
     }
 };
 
 void mouse_button_callback(Window* wnd, int button, char pressed){
     Mouse::button = button;
-    POINT p;                        //<-----------
-    GetCursorPos(&p);               //<-----------
-    HWND hwnd = WindowFromPoint(p); //hwnd under cursor
-    RECT rect;
-    GetWindowRect(hwnd, &rect);
-    Mouse::pos.x = p.x - rect.left;
-    Mouse::pos.y = p.y - rect.top;
+    POINT p;
+    GetCursorPos(&p);                   //get cursor position
+    HWND hwnd = WindowFromPoint(p);     //hwnd under cursor
+    ScreenToClient(hwnd, &p);           //recalculate screen's coord into client's coord
+    Mouse::pos.x = p.x;
+    Mouse::pos.y = p.y;
     
-    //std::cout << "Mouse click at (" << Mouse::pos.x << ", " << Mouse::pos.y << "); button = " << button << std::endl;
+    std::cout << "Mouse click at (" << Mouse::pos.x << ", " << Mouse::pos.y << "); button = " << button << std::endl;
     //go to end children (tree parsing)
 
     CWindow* window = findwindow(wnd);
@@ -221,13 +247,13 @@ void mouse_button_callback(Window* wnd, int button, char pressed){
 }
 
 void mouse_move_callback(Window *wnd, int key, char pressed){
-    POINT p;                        //<-----------
-    GetCursorPos(&p);               //<-----------
-    HWND hwnd = WindowFromPoint(p); //hwnd under cursor
-    RECT rect;
-    GetWindowRect(hwnd, &rect);
-    Mouse::pos.x = p.x - rect.left;
-    Mouse::pos.y = p.y - rect.top;
+    static Widget *last_hovered = nullptr;
+    POINT p;
+    GetCursorPos(&p);                   //get cursor position
+    HWND hwnd = WindowFromPoint(p);     //hwnd under cursor
+    ScreenToClient(hwnd, &p);           //recalculate screen's coord into client's coord
+    Mouse::pos.x = p.x;
+    Mouse::pos.y = p.y;
     
     //std::cout << "Mouse click at (" << Mouse::pos.x << ", " << Mouse::pos.y << "); button = " << button << std::endl;
     //go to end children (tree parsing)
@@ -237,9 +263,13 @@ void mouse_move_callback(Window *wnd, int key, char pressed){
     Widget* root = window->get_root_widget();
     if(root == nullptr)return;
     Widget* target = root->search_match(Mouse::pos);
-    if(target == nullptr)return;
+    //if(target == nullptr)return;
 
-    target->MouseInboundHandler();
+    if(target != last_hovered || target == nullptr){
+        if (last_hovered) last_hovered->MouseOutboundHandler();
+        if (target) target->MouseInboundHandler();
+        last_hovered = target;
+    }
     return;
 }
 
@@ -251,13 +281,47 @@ int main(){
     }));
 
     wid.in_bound(new Event([](Widget *wid)->void{
-        std::cout<<"in bound!\n";
+        wid->set_render_function([](Widget *wid) {
+            Window *window = wid->get_depended_window();
+            position real = get_real_position(wid);
+            rect_t bound = wid->get_rect();
+            for (int dy = 0; dy < bound.size.height; ++dy) {
+                for (int dx = 0; dx < bound.size.width; ++dx) {
+                    putpixel(window, real.x + dx, real.y + dy, 0x0000FFFF);
+                }
+            }
+        });
     }));
+
+    wid.out_bound(new Event([](Widget *wid)->void{
+        wid->set_render_function([](Widget *wid) {
+            Window *window = wid->get_depended_window();
+            position real = get_real_position(wid);
+            rect_t bound = wid->get_rect();
+            for (int dy = 0; dy < bound.size.height; ++dy) {
+                for (int dx = 0; dx < bound.size.width; ++dx) {
+                    putpixel(window, real.x + dx, real.y + dy, 0x00FFFFFF);
+                }
+            }
+        });
+    }));
+
+    wid.set_render_function([](Widget *wid) {
+        Window *window = wid->get_depended_window();
+        position real = get_real_position(wid);
+        rect_t bound = wid->get_rect();
+        for (int dy = 0; dy < bound.size.height; ++dy) {
+            for (int dx = 0; dx < bound.size.width; ++dx) {
+                putpixel(window, real.x + dx, real.y + dy, 0x00FFFFFF);
+            }
+        }
+    });
     w1.set_widget(&wid);
 
-    MSG msg = {};
-    while (MessageProcess()) {
-
+    while (true) {
+        MessageProcess();
+        wid.render();
+        Sleep(5);
     }
     return 0;
 }
