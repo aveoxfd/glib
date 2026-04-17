@@ -1,6 +1,5 @@
 #include "Include/nwind/nwind.h"
 #include <iostream>
-#include <string>
 #include <windows.h>
 
 class Widget;
@@ -206,11 +205,10 @@ void mouse_button_callback(Window* wnd, int button, char pressed){
 
 int main(){
     CWindow w1(800, 600);
-    Widget wid(rect_t{position{200, 200}, size{200, 100}});
-    Event *ev = new Event([](Widget *wid)->void{
+    Widget wid(rect_t{position{200, 200}, size{500, 500}});
+    wid.on_click(new Event([](Widget *wid)->void{
         std::cout<<"Hello world!\n";
-    });
-    wid.on_click(ev);
+    }));
     w1.set_widget(&wid);
 
     MSG msg = {};
