@@ -112,10 +112,23 @@ class Widget{
         return children_count;
     }
 
+    void MousePressHandler(int button){
+        if (button == 1 && onclick_event){
+            onclick_event->activate(this);
+        }
+        return;
+    }
+
+    void MouseInboundHandler(){
+        if(inbound_event){
+            inbound_event->activate(this);
+        }
+        return;
+    }
+
     //position of object in the bound of last layer of wodget's tree
     Widget* search_match(position pos){
         if (!contains(pos))return nullptr;
-        Widget *children_curr = children[0]; //*children
         for (int i = children_count - 1; i >= 0; --i){
             Widget* found = children[i]->search_match(pos);
             if (found) return found;
@@ -161,6 +174,8 @@ class CWindow{
     }
 
     void set_widget(Widget *_widget){
+        main_widget = _widget;
+        return;
     }
 };
 
@@ -176,6 +191,8 @@ void mouse_button_callback(Window* wnd, int button, char pressed){
     CWindow* window = findwindow(wnd);
     Widget* root = window->get_root_widget();
     Widget* target = root->search_match(Mouse::pos);
+
+    target->MousePressHandler(Mouse::button);
     return;
 }
 
