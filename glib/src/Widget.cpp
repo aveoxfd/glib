@@ -30,7 +30,7 @@ render_func(nullptr)
     //none
 }
 
-//Widget::~Widget(){}
+Widget::~Widget(){}
 
 rect_t Widget::get_rect(){
     return bound;
