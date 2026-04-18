@@ -4,8 +4,9 @@
 #include "Widget.h"
 #include "Include/nwind/nwind.h"
 #include "structures/structs.h"
+#include "glib.h"
 
-class ClassWindow{
+GLIBAPI class ClassWindow{
     private:
     Window *window;
     Widget *root_widget; //main widget

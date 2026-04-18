@@ -4,8 +4,9 @@
 #include "ClassWindow.h"
 #include "structs.h"
 #include "Event.h"
+#include "glib.h"
 
-class Widget{
+GLIBAPI class Widget{
     private:
     Widget *parent;
     Widget **children;

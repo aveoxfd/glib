@@ -1,17 +1,14 @@
 #ifndef GLIB_G
 #define GLIB_H
 
-#include "gstructs.h"
-#include "Include/nwind/nwind.h"
+#define GLIBAPI
 
-class ClassWindow{
-    private:
-    Window *window;
-    
+#ifdef DLLBUILD
+#define GLIBAPI __attribute__(dllexport)
+#endif
 
-    public:
-
-};
-typedef ClassWindow CWindow;
+#if defined (USEDLL)
+#define GLIBAPI __attribute__(dllimport)
+#endif
 
 #endif
