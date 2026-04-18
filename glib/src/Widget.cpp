@@ -30,7 +30,12 @@ render_func(nullptr)
     //none
 }
 
-Widget::~Widget(){}
+Widget::~Widget() {
+    for (int i = 0; i < children_count; ++i) {
+        delete children[i];
+    }
+    delete[] children;
+}
 
 rect_t Widget::get_rect(){
     return bound;
@@ -114,7 +119,7 @@ void Widget::add_child(Widget *child_widget){
 
     children = temp;
     child_widget->parent = this;
-    child_widget->association = this->association; //child_widget->set_associated_window(this->association);
+    child_widget->set_associated_window(this->association); //child_widget->association = this->association; //
 
     return;
 }
@@ -135,8 +140,8 @@ void Widget::remove_child(Widget* child_widget){ //removes a child element from 
 
     if (children_count > 1){
         temp = new Widget* [children_count - 1];
-        for (int i = 0, j = 0; i<children_count; ++i){
-            if (i += index) temp[j++] = children[i]; 
+        for (int i = 0, j = 0; i<children_count; i++){
+            if (i != index) temp[j++] = children[i]; 
         }
     }
 
