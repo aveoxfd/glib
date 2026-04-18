@@ -154,5 +154,7 @@ void Widget::remove_child(Widget* child_widget){ //removes a child element from 
     child_widget->parent = nullptr;
 
     child_widget->set_associated_window(nullptr);
+
+    //delete child_widget
     return;
 }
