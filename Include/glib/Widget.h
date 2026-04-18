@@ -22,7 +22,8 @@ GLIBAPI class Widget{
 
     public:
     Widget(rect_t bound);
-    ~Widget();
+    Widget(rect_t bound, Widget *parent);
+    virtual ~Widget();
     rect_t get_rect();
     void on_click(Event *e);
     void in_bound(Event *e);
@@ -36,6 +37,8 @@ GLIBAPI class Widget{
     Widget* find_widget(position pos);
     void render();
 
+    void add_child(Widget *child_widget);
+    void remove_child(Widget *child_widget);
 };
 
 #endif
