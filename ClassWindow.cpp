@@ -36,7 +36,7 @@ CWindow *findwindow(Window* native){
     return nullptr;
 }
 
-void unregwindow(Window *native){
+void UnregWindow(Window *native){
     for (int i = 0; i<WE_MAX; i++){
         if (WE_array[i].native == native) WE_array[i] = {nullptr, nullptr};
     }
