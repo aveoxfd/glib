@@ -1,6 +1,7 @@
+
 #include "ClassWindow.h"
-#include "structures/structs.h"
 #include <windows.h>
+#include "Include/nwind/nwind.h"
 
 #ifdef DEBUG
 #include <iostream>

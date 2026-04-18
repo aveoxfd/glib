@@ -1,8 +1,9 @@
 #include "Event.h"
+#include "Widget.h"
 
-Event::Event(EventFunction function = nullptr, Widget *connected = nullptr):event_function(function), connection(connected){
+Event::Event(EventFunction function, Widget *connected):event_function(function), connection(connected){
 }
-void Event::activate(Widget *sender = nullptr){
+void Event::activate(Widget *sender){
     if (!event_function)return;
     if (sender == nullptr){
         if (connection){

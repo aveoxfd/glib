@@ -1,10 +1,9 @@
 #ifndef WIDGET_H
 #define WIDGET_H
 
-#include "ClassWindow.h"
-#include "structs.h"
-#include "Event.h"
 #include "glib.h"
+
+class ClassWindow;
 
 GLIBAPI class Widget{
     private:
@@ -23,7 +22,7 @@ GLIBAPI class Widget{
 
     public:
     Widget(rect_t bound);
-    ~Widget(){};
+    ~Widget();
     rect_t get_rect();
     void on_click(Event *e);
     void in_bound(Event *e);
