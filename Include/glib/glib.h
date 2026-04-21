@@ -1,4 +1,4 @@
-#ifndef GLIB_G
+#ifndef GLIB_H
 #define GLIB_H
 
 #define GLIBAPI
