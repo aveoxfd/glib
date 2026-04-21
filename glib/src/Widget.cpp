@@ -1,5 +1,6 @@
 #include "Widget.h"
 #include "../../include/nwind/nwind.h"
+#include <new>
 
 position get_real_position(Widget *widget);
 
@@ -119,9 +120,10 @@ void Widget::add_child(Widget *child_widget){ //!!!
     if (child_widget->parent){
         child_widget->parent->remove_child(child_widget);
     }
-
-    Widget **temp = new Widget* [++children_count];
-    if (!temp){
+    Widget **temp = nullptr;
+    try{
+       temp = new Widget* [++children_count]; // gives throw
+    } catch(std::bad_alloc&){
         --children_count;
         return;
     }
@@ -152,7 +154,8 @@ void Widget::remove_child(Widget* child_widget){ //removes a child element from 
 
     for (int i = 0, j = 0; i < children_count; ++i){
         if (child_widget == *(children + i)){
-            found = true; continue;
+            found = true; 
+            continue;
         }
         temp[j++] = children[i];
     }

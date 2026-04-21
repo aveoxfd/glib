@@ -2,6 +2,8 @@
 #define WIDGET_H
 
 #include "glib.h"
+#include "Event.h"
+#include "Widget.h"
 
 class ClassWindow;
 
