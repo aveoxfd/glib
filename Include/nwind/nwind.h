@@ -33,6 +33,7 @@ NWINDAPI Window* WindowCreate(const int width, const int height, const char* win
 NWINDAPI void WindowDestroy(Window* wnd); //not necessary windows deletes window automatically
 NWINDAPI unsigned char MessageProcess(void);
 NWINDAPI void putpixel(Window* wnd, int x, int y, unsigned int color);
+NWINDAPI void WindowUpdate(Window* wnd);
 
 #if defined (cplusplus) || defined (c_plusplus) || defined (__cplusplus)
 }
