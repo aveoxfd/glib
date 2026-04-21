@@ -11,6 +11,7 @@
 #define GLIBAPI __attribute__(dllimport)
 #endif
 
+#include "../nwind/nwind.h"
 #include "structures/structs.h"
 #include "ClassWindow.h"
 #include "Widget.h"
