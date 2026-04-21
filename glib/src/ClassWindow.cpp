@@ -82,9 +82,9 @@ void mouse_move_callback(Window *wnd, int key, char pressed){
     #endif
     //go to end children (tree parsing)
 
-    CWindow* window = findwindow(wnd);
-    if (window == nullptr)return;
-    Widget* root = window->get_root_widget();
+    CWindow* class_window = findwindow(wnd);
+    if (class_window == nullptr)return;
+    Widget* root = class_window->get_root_widget();
     if(root == nullptr)return;
     Widget* target = root->find_widget(Mouse::pos);
     //if(target == nullptr)return;
