@@ -78,7 +78,7 @@ void mouse_move_callback(Window *wnd, int key, char pressed){
     Mouse::pos.y = p.y;
     
     #ifdef DEBUG
-    std::cout << "Mouse click at (" << Mouse::pos.x << ", " << Mouse::pos.y << "); button = " << button << std::endl;
+    std::cout << "Mouse has been moved at (" << Mouse::pos.x << ", " << Mouse::pos.y << "); key = " << key << std::endl;
     #endif
     //go to end children (tree parsing)
 
@@ -104,6 +104,8 @@ ClassWindow::ClassWindow(const int width, const int height):window(nullptr), roo
 
     RegWindow({window, this});
 
+    WindowSetMouseButtonCallback(window, mouse_button_callback);
+    WindowSetMouseMoveCallback(window, mouse_move_callback);
 }
 
 ClassWindow::~ClassWindow(){
