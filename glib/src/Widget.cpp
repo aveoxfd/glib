@@ -30,6 +30,17 @@ render_func(nullptr)
 {
     //none
 }
+Widget::Widget(rect_t rectangle_bound, Widget *parent):
+parent(parent),
+children(nullptr), 
+association(nullptr),
+bound(rectangle_bound), 
+onclick_event(nullptr), 
+inbound_event(nullptr), 
+outbound_event(nullptr), 
+render_func(nullptr){
+    //none
+}
 
 Widget::~Widget() {
     for (int i = 0; i < children_count; ++i) {
