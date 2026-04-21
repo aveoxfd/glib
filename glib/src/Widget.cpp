@@ -74,6 +74,10 @@ Window* Widget::get_associated_window(){
 
 void Widget::set_associated_window(Window *association){
     this->association = association;
+
+    for (int i = 0; i < children_count; ++i){
+        children[i]->set_associated_window(association);
+    }
 }
 
 void Widget::set_render_function(render_function function){
