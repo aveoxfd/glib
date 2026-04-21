@@ -1,7 +1,9 @@
 #ifndef CLASSWINDOW_H
 #define CLASSWINDOW_H
 
+#include "../nwind/nwind.h"
 #include "glib.h"
+class Widget;
 
 GLIBAPI class ClassWindow{
     private:
