@@ -6,7 +6,7 @@ position get_real_position(Widget *widget);
 
 position get_real_position(Widget *widget){
     position real_position = widget->bound.pos;
-    for (Widget *curr = widget->parent; curr->parent != nullptr; curr = curr->parent){
+    for (Widget *curr = widget->parent; curr != nullptr; curr = curr->parent){
         real_position.x += curr->bound.pos.x;
         real_position.y += curr->bound.pos.y;
     }
@@ -40,7 +40,7 @@ onclick_event(nullptr),
 inbound_event(nullptr), 
 outbound_event(nullptr), 
 render_func(nullptr){
-    //none
+    parent->add_child(this);
 }
 
 Widget::~Widget() {
@@ -72,7 +72,7 @@ Window* Widget::get_associated_window(){
 }
 
 void Widget::set_associated_window(Window *association){
-    if (association)this->association = association;
+    this->association = association;
 }
 
 void Widget::set_render_function(render_function function){
