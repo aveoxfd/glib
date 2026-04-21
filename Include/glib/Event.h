@@ -10,6 +10,7 @@ class Event{
     Widget *connection;
     public:
     Event(EventFunction function = nullptr, Widget *connected = nullptr);
+    Event(EventFunction function);
     void activate(Widget *sender = nullptr);
 };
 
