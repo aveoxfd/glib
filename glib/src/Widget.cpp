@@ -1,5 +1,6 @@
 #include "Widget.h"
 #include "../../include/nwind/nwind.h"
+#include <iostream>
 #include <new>
 
 position get_real_position(Widget *widget);
@@ -101,12 +102,22 @@ void Widget::render(){
 
 Widget* Widget::find_widget(position pos){
     if (!contains(pos)){
+        #ifdef DEBUG
+        std::cout<<"Not found.\n";
+        #endif
         return nullptr;
     }
     for (int i = children_count - 1; i >= 0; --i){ //for (int i = 0; i < children_count - 1; ++i)
         Widget* found = children[i]->find_widget(pos);
+
+        #ifdef DEBUG
+        std::cout<<"Found: "<<found<<"\n";
+        #endif
         if (found) return found;
     }
+    #ifdef DEBUG
+    std::cout<<"It's root_widget.\n";
+    #endif
     return this;
 }
 
