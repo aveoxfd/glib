@@ -2,9 +2,10 @@
 #include "../../include/nwind/nwind.h"
 
 position get_real_position(Widget *widget);
+
 position get_real_position(Widget *widget){
     position real_position = widget->bound.pos;
-    for (Widget *curr = widget; curr->parent != nullptr; curr = curr->parent){
+    for (Widget *curr = widget->parent; curr->parent != nullptr; curr = curr->parent){
         real_position.x += curr->bound.pos.x;
         real_position.y += curr->bound.pos.y;
     }
@@ -12,7 +13,7 @@ position get_real_position(Widget *widget){
 }
 
 bool Widget::contains(position pos){
-    position real = get_real_position(this);
+    position real = get_real_position(this); //real postion of widget in depended window;
     return pos.x >= real.x && pos.x < bound.size.width + real.x 
         && pos.y >= real.y && pos.y < bound.size.height + real.y;
 }
@@ -67,9 +68,9 @@ void Widget::set_render_function(render_function function){
 }
 
 void Widget::mouse_press_handler(int button){
-    if (onclick_event && button == 0){
+    if (onclick_event && button == 0){ //left button
         onclick_event->activate(this);
-    } 
+    }
 }
 
 void Widget::mouse_inbound_handler(){
@@ -90,14 +91,14 @@ Widget* Widget::find_widget(position pos){
     if (!contains(pos)){
         return nullptr;
     }
-    for (int i = children_count - 1; i >= 0; --i){
+    for (int i = children_count - 1; i >= 0; --i){ //for (int i = 0; i < children_count - 1; ++i)
         Widget* found = children[i]->find_widget(pos);
         if (found) return found;
     }
     return this;
 }
 
-void Widget::add_child(Widget *child_widget){
+void Widget::add_child(Widget *child_widget){ //!!!
     if (!child_widget)return;
 
     for (Widget* curr = this; curr; curr = curr->parent){ //if child is a parent
@@ -124,7 +125,7 @@ void Widget::add_child(Widget *child_widget){
     return;
 }
 
-void Widget::remove_child(Widget* child_widget){ //removes a child element from the list of child elements of the current parent, which uses child_widget
+void Widget::remove_child(Widget* child_widget){ //removes a child element from the list of child elements of the current parent, which uses child_widget | !!!
     if (!child_widget || child_widget->parent != this) return;
 
     int index = -1;
