@@ -121,6 +121,10 @@ void Widget::add_child(Widget *child_widget){ //!!!
     }
 
     Widget **temp = new Widget* [++children_count];
+    if (!temp){
+        --children_count;
+        return;
+    }
 
     for (int i = 0; i < children_count - 1; ++i){
         temp[i] = children[i];
@@ -137,36 +141,29 @@ void Widget::add_child(Widget *child_widget){ //!!!
 }
 
 void Widget::remove_child(Widget* child_widget){ //removes a child element from the list of child elements of the current parent, which uses child_widget | !!!
-    if (!child_widget || child_widget->parent != this) return;
-
-    int index = -1;
-    for (int i = 0; i < children_count; ++i){
-        if (children[i] == child_widget){
-            index = i;
-            break;
-        }
-    }
-    if(index == -1)return;
-
+    if (!child_widget || child_widget->parent != this)return;
+    
     Widget **temp = nullptr;
+    bool found = false;
 
     if (children_count > 1){
-        temp = new Widget* [children_count - 1];
-        for (int i = 0, j = 0; i<children_count; i++){
-            if (i != index) temp[j++] = children[i]; 
-        }
+        temp = new Widget*[children_count-1];
     }
 
+    for (int i = 0, j = 0; i < children_count; ++i){
+        if (child_widget == *(children + i)){
+            found = true; continue;
+        }
+        temp[j++] = children[i];
+    }
+
+    if (!found){ delete[] temp; return; }
+
     delete[] children;
-
     children = temp;
-
     --children_count;
 
     child_widget->parent = nullptr;
-
     child_widget->set_associated_window(nullptr);
-
-    //delete child_widget
     return;
 }
