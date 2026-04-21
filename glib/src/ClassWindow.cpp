@@ -106,7 +106,9 @@ ClassWindow::ClassWindow(const int width, const int height):window(nullptr), roo
 
 }
 
-ClassWindow::~ClassWindow(){};
+ClassWindow::~ClassWindow(){
+    UnregWindow(window);
+};
 
 Widget* ClassWindow::get_root_widget(){
     if (root_widget)return root_widget;
