@@ -10,6 +10,9 @@ namespace Mouse{
     inline position pos;
     inline int button;
 }
+namespace Keyboard{
+    inline int key;
+}
 
 #define WE_MAX 10
 WindowEntry WE_array[WE_MAX];
@@ -96,6 +99,13 @@ void mouse_move_callback(Window *wnd, int x, int y){
     return;
 }
 
+void keyboardCallback(Window *window, int key, char pressed){ //TODO!
+    Keyboard::key = key;
+
+    
+    return;
+}
+
 
 ClassWindow::ClassWindow(const int width, const int height):window(nullptr), root_widget(nullptr){
     window = WindowCreate(width, height, "glib_window");
@@ -105,6 +115,7 @@ ClassWindow::ClassWindow(const int width, const int height):window(nullptr), roo
 
     WindowSetMouseButtonCallback(window, mouse_button_callback);
     WindowSetMouseMoveCallback(window, mouse_move_callback);
+    WindowSetKeyCallback(window, keyboardCallback);
 }
 
 ClassWindow::~ClassWindow(){
@@ -129,6 +140,10 @@ position ClassWindow::get_mouse_position(void){
 
 int ClassWindow::get_mouse_button(void){
     return Mouse::button;
+}
+
+int get_keyboard_key(void){
+    return Keyboard::key;
 }
 
 void ClassWindow::update(void){
