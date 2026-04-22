@@ -36,6 +36,10 @@ void Widget::update(){
     return;
 }
 
+void Widget::set_update_function(update_function function){
+    if (function)update_func = function;
+}
+
 Widget::Widget(rect_t rectangle_bound):
 parent(nullptr), 
 children(nullptr),

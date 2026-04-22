@@ -38,6 +38,7 @@ GLIBAPI class Widget{
     Window* get_associated_window(void); //associated
     void set_associated_window(Window *association);
     void set_render_function(render_function function);
+    void set_update_function(update_function function);
     void virtual virtual_render_function();
     void virtual virtual_update_function();
     void use_virtual_render_function(){render_function_type = 1;};
