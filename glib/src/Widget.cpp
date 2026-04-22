@@ -3,6 +3,9 @@
 #include <iostream>
 #include <new>
 
+#define POINTER_RENDER_TYPE 0
+#define VIRTUAL_RENDER_TYPE ~POINTER_RENDER_TYPE
+
 position get_real_position(Widget *widget);
 
 position get_real_position(Widget *widget){
@@ -28,8 +31,8 @@ bound(rectangle_bound),
 onclick_event(nullptr), 
 inbound_event(nullptr), 
 outbound_event(nullptr), 
-render_func(nullptr)
-{
+render_func(nullptr){
+    use_pointer_render_function();
     //none
 }
 Widget::Widget(rect_t rectangle_bound, Widget *parent):
@@ -41,6 +44,7 @@ onclick_event(nullptr),
 inbound_event(nullptr), 
 outbound_event(nullptr), 
 render_func(nullptr){
+    use_pointer_render_function();
     parent->add_child(this);
 }
 
@@ -104,8 +108,20 @@ void Widget::mouse_outbound_handler(){
 }
 
 void Widget::render(){
-    if (render_func)render_func(this);
+    switch(render_function_type){
+        case 0:
+        if (render_func)render_func(this);
+        break;
+        case 1:
+        virtual_render_function();
+        break;
+
+        default:
+        break;
+    }
 }
+
+void Widget::virtual_render_function(){}
 
 Widget* Widget::find_widget(position pos){
     if (!contains(pos)){

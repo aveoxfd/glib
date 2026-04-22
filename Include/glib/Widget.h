@@ -6,6 +6,7 @@
 #include "Widget.h"
 
 class ClassWindow;
+//typedef struct settings settings_t;
 
 GLIBAPI class Widget{
     private:
@@ -20,6 +21,7 @@ GLIBAPI class Widget{
     Event *inbound_event;
     Event *outbound_event;
     render_function render_func;
+    char render_function_type; //0 - pointer; 1 - virtual
     bool contains(position pos);
 
     public:
@@ -33,6 +35,9 @@ GLIBAPI class Widget{
     Window* get_associated_window(void); //associated
     void set_associated_window(Window *association);
     void set_render_function(render_function function);
+    void virtual virtual_render_function();
+    void use_virtual_render_function(){render_function_type = 1;};
+    void use_pointer_render_function(){render_function_type = 0;};
     void mouse_press_handler(int button);
     void mouse_inbound_handler();
     void mouse_outbound_handler();
