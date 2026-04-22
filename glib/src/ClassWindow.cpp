@@ -1,4 +1,3 @@
-
 #include "ClassWindow.h"
 #include <windows.h>
 #include "../../include/nwind/nwind.h"
@@ -130,4 +129,9 @@ position ClassWindow::get_mouse_position(void){
 
 int ClassWindow::get_mouse_button(void){
     return Mouse::button;
+}
+
+void ClassWindow::update(void){
+    ClearWindow(window, 0x00000000);
+    WindowUpdate(window);
 }

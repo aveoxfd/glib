@@ -17,6 +17,7 @@ GLIBAPI class ClassWindow{
     void set_widget(Widget *widget);
     position get_mouse_position(void);
     int get_mouse_button(void);
+    void update(void);
 };
 typedef ClassWindow CWindow;
 
