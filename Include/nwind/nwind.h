@@ -30,7 +30,8 @@ NWINDAPI void WindowSetMouseButtonCallback(Window* wnd, WindowMouseButtonCallbac
 NWINDAPI void WindowSetMouseMoveCallback(Window* wnd, WindowMouseMoveCallback cb_func);
 
 NWINDAPI Window* WindowCreate(const int width, const int height, const char* window_name);
-NWINDAPI void WindowDestroy(Window* wnd); //not necessary windows deletes window automatically
+NWINDAPI void WindowDestroy(Window* wnd);
+NWINDAPI void ClearWindow(Window* wnd, int color);
 NWINDAPI unsigned char MessageProcess(void);
 NWINDAPI void putpixel(Window* wnd, int x, int y, unsigned int color);
 NWINDAPI void WindowUpdate(Window* wnd);
