@@ -1,15 +1,10 @@
 #include "Event.h"
 #include "Widget.h"
 
-Event::Event(EventFunction function, void* data, Widget *connected):
+Event::Event(EventFunction function, void* user_data, Widget *connected):
 event_function(function),
-user_data(data),
+user_data(user_data),
 connection(connected){
-}
-Event::Event(EventFunction function):
-event_function(function),
-user_data(nullptr),
-connection(nullptr){
 }
 
 void Event::activate(Widget *sender){
