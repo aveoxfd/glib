@@ -12,6 +12,7 @@ class Event{
     public:
     Event(EventFunction function, void* data = nullptr, Widget *connected = nullptr);
     Event(EventFunction function);
+    ~Event();
     void activate(Widget *sender = nullptr);
     void* get_data() const { return user_data; }
 };
