@@ -15,6 +15,7 @@ namespace Mouse{
 #define WE_MAX 10
 WindowEntry WE_array[WE_MAX];
 int WE_array_count = 0;
+static Widget *last_hovered = nullptr;
 
 void RegWindow(WindowEntry both){ //window registration
     if (WE_array_count < WE_MAX){
@@ -69,7 +70,6 @@ void mouse_button_callback(Window* wnd, int button, char pressed){
 }
 
 void mouse_move_callback(Window *wnd, int key, char pressed){
-    static Widget *last_hovered = nullptr;
     POINT p;
     GetCursorPos(&p);                   //get cursor position
     HWND hwnd = WindowFromPoint(p);     //hwnd under cursor
@@ -110,6 +110,7 @@ ClassWindow::ClassWindow(const int width, const int height):window(nullptr), roo
 
 ClassWindow::~ClassWindow(){
     UnregWindow(window);
+    last_hovered = nullptr;
 };
 
 Widget* ClassWindow::get_root_widget(){
