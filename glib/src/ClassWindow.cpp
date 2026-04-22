@@ -123,3 +123,11 @@ void ClassWindow::set_widget(Widget *widget){
     root_widget = widget;
     widget->set_associated_window(window);
 }
+
+position ClassWindow::get_mouse_position(void){
+    return Mouse::pos;
+}
+
+int ClassWindow::get_mouse_button(void){
+    return Mouse::button;
+}
