@@ -51,7 +51,7 @@ GLIBAPI class Widget{
     Widget* find_widget(position pos);
     void render();
     void update();
-
+    void set_position(position_t new_position){bound.pos = new_position;};
     void add_child(Widget *child_widget);
     void remove_child(Widget *child_widget);
 };
