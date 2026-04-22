@@ -23,7 +23,7 @@ typedef struct Window Window, Window_t, Wnd, Wnd_t;
 
 typedef void (*WindowKeyCallback)(Window *wnd, int key, char pressed);
 typedef void (*WindowMouseButtonCallback)(Window *wnd, int key, char pressed);
-typedef void (*WindowMouseMoveCallback)(Window *wnd, int key, char pressed);
+typedef void (*WindowMouseMoveCallback)(Window *wnd, int x, int y);
 
 NWINDAPI void WindowSetKeyCallback(Window* wnd, WindowKeyCallback cb_func);
 NWINDAPI void WindowSetMouseButtonCallback(Window* wnd, WindowMouseButtonCallback cb_func);
