@@ -45,13 +45,13 @@ render_func(nullptr){
 }
 
 Widget::~Widget() {
-    for (int i = 0; i < children_count; ++i) {
-        delete children[i];
-    }
-    delete[] children;
-    delete onclick_event;
-    delete inbound_event;
-    delete outbound_event;
+    //for (int i = 0; i < children_count; ++i) {
+    //    delete children[i];
+    //}
+    //delete[] children;
+    //delete onclick_event;
+    //delete inbound_event;
+    //delete outbound_event;
 }
 
 rect_t Widget::get_rect(){
