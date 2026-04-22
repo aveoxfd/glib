@@ -49,6 +49,9 @@ Widget::~Widget() {
         delete children[i];
     }
     delete[] children;
+    delete onclick_event;
+    delete inbound_event;
+    delete outbound_event;
 }
 
 rect_t Widget::get_rect(){
