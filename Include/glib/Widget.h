@@ -11,7 +11,7 @@ class ClassWindow;
 GLIBAPI class Widget{
     private:
     typedef void(*render_function)(Widget *widget);
-    typedef void(*update_function)(Widget *widget);
+    typedef void(*update_function)(Widget *widget, void *user_data);
     Widget *parent;
     Widget **children;
     int children_count = 0;
@@ -22,6 +22,7 @@ GLIBAPI class Widget{
     Event *outbound_event;
     render_function render_func;
     update_function update_func;
+    void *user_data;
     char render_function_type; //0 - pointer; 1 - virtual
     char update_function_type; //0 - pointer; 1 - virtual
     friend position get_real_position(Widget *widget);
@@ -38,7 +39,7 @@ GLIBAPI class Widget{
     Window* get_associated_window(void); //associated
     void set_associated_window(Window *association);
     void set_render_function(render_function function);
-    void set_update_function(update_function function);
+    void set_update_function(update_function function, void *user_data = nullptr);
     void virtual virtual_render_function();
     void virtual virtual_update_function();
     void use_virtual_render_function(){render_function_type = 1;};

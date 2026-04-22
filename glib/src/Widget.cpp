@@ -26,7 +26,7 @@ bool Widget::contains(position pos){
 void Widget::update(){
     switch(update_function_type){
         case POINTER:
-        if (update_func)update_func(this);
+        if (update_func)update_func(this, user_data);
         break;
 
         case VIRTUAL:
@@ -36,7 +36,8 @@ void Widget::update(){
     return;
 }
 
-void Widget::set_update_function(update_function function){
+void Widget::set_update_function(update_function function, void *user_data){
+    this->user_data = user_data;
     if (function)update_func = function;
 }
 
@@ -50,10 +51,10 @@ onclick_event(nullptr),
 inbound_event(nullptr), 
 outbound_event(nullptr),
 render_func(nullptr),
-update_func(nullptr){
+update_func(nullptr),
+user_data(nullptr){
     use_pointer_render_function();
     use_pointer_update_function();
-    //none
 }
 Widget::Widget(rect_t rectangle_bound, Widget *parent):
 parent(nullptr), 
@@ -65,7 +66,8 @@ onclick_event(nullptr),
 inbound_event(nullptr), 
 outbound_event(nullptr),
 render_func(nullptr),
-update_func(nullptr){
+update_func(nullptr),
+user_data(nullptr){
     use_pointer_render_function();
     use_pointer_update_function();
     parent->add_child(this);
