@@ -6,7 +6,6 @@
 #include "Widget.h"
 
 class ClassWindow;
-//typedef struct settings settings_t;
 
 GLIBAPI class Widget{
     private:
@@ -42,6 +41,8 @@ GLIBAPI class Widget{
     void set_update_function(update_function function, void *user_data = nullptr);
     void virtual virtual_render_function();
     void virtual virtual_update_function();
+    void virtual virtual_mouse_press_handler(); //unuse fix
+    void virtual virtual_mouse_move_handler();  //unuse fix
     void use_virtual_render_function(){render_function_type = 1;};
     void use_pointer_render_function(){render_function_type = 0;};
     void use_virtual_update_function(){update_function_type = 1;};
@@ -56,5 +57,13 @@ GLIBAPI class Widget{
     void add_child(Widget *child_widget);
     void remove_child(Widget *child_widget);
 };
+
+/*
+Event *onclick_event;
+Event *inbound_event;
+Event *outbound_event;
+
+must be in mutation class. like, onclick in Button : Widget, etc...
+*/
 
 #endif
