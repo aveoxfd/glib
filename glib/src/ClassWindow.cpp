@@ -31,7 +31,7 @@ void RegWindow(Window *native, ClassWindow *owner){ //window registration
     return;
 }
 
-CWindow *findwindow(Window* native){
+CWindow *findwindow(Window* native){ //find associated ClassWindow with Window
     for (int i = 0; i<WE_MAX; i++){
         if (WE_array[i].native == native) return WE_array[i].owner;
     }

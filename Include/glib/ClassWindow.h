@@ -5,6 +5,7 @@
 #include "glib.h"
 class Widget;
 
+
 GLIBAPI class ClassWindow{
     private:
     Window *window;
@@ -18,4 +19,6 @@ GLIBAPI class ClassWindow{
     int get_mouse_button(void);
 };
 typedef ClassWindow CWindow;
+
+CWindow *findwindow(Window* native); //find associated classwindow with window
 #endif
