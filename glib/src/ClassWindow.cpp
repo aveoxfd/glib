@@ -69,7 +69,7 @@ void mouse_button_callback(Window* wnd, int button, char pressed){
     return;
 }
 
-void mouse_move_callback(Window *wnd, int key, char pressed){
+void mouse_move_callback(Window *wnd, int x, int y){
     POINT p;
     GetCursorPos(&p);                   //get cursor position
     HWND hwnd = WindowFromPoint(p);     //hwnd under cursor
@@ -110,6 +110,7 @@ ClassWindow::ClassWindow(const int width, const int height):window(nullptr), roo
 
 ClassWindow::~ClassWindow(){
     UnregWindow(window);
+    WindowDestroy(window);
     last_hovered = nullptr;
 };
 
