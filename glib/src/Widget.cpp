@@ -3,8 +3,8 @@
 #include <iostream>
 #include <new>
 
-#define POINTER_RENDER_TYPE 0
-#define VIRTUAL_RENDER_TYPE ~POINTER_RENDER_TYPE
+#define POINTER 0
+#define VIRTUAL 1
 
 position get_real_position(Widget *widget);
 
@@ -23,28 +23,47 @@ bool Widget::contains(position pos){
         && pos.y >= real.y && pos.y < bound.size.height + real.y;
 }
 
+void Widget::update(){
+    switch(update_function_type){
+        case POINTER:
+        if (update_func)update_func(this);
+        break;
+
+        case VIRTUAL:
+        virtual_update_function();
+        break;
+    }
+    return;
+}
+
 Widget::Widget(rect_t rectangle_bound):
 parent(nullptr), 
-children(nullptr), 
+children(nullptr),
+children_count(0),
 association(nullptr),
 bound(rectangle_bound), 
 onclick_event(nullptr), 
 inbound_event(nullptr), 
-outbound_event(nullptr), 
-render_func(nullptr){
+outbound_event(nullptr),
+render_func(nullptr),
+update_func(nullptr){
     use_pointer_render_function();
+    use_pointer_update_function();
     //none
 }
 Widget::Widget(rect_t rectangle_bound, Widget *parent):
-parent(parent),
-children(nullptr), 
+parent(nullptr), 
+children(nullptr),
+children_count(0),
 association(nullptr),
 bound(rectangle_bound), 
 onclick_event(nullptr), 
 inbound_event(nullptr), 
-outbound_event(nullptr), 
-render_func(nullptr){
+outbound_event(nullptr),
+render_func(nullptr),
+update_func(nullptr){
     use_pointer_render_function();
+    use_pointer_update_function();
     parent->add_child(this);
 }
 
@@ -109,10 +128,10 @@ void Widget::mouse_outbound_handler(){
 
 void Widget::render(){
     switch(render_function_type){
-        case 0:
+        case POINTER:
         if (render_func)render_func(this);
         break;
-        case 1:
+        case VIRTUAL:
         virtual_render_function();
         break;
 
@@ -120,6 +139,8 @@ void Widget::render(){
         break;
     }
 }
+
+void Widget::virtual_update_function(){}
 
 void Widget::virtual_render_function(){}
 
