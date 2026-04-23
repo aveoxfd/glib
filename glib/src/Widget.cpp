@@ -41,23 +41,8 @@ void Widget::set_update_function(update_function function, void *user_data){
     if (function)update_func = function;
 }
 
-Widget::Widget(rect_t rectangle_bound):
-parent(nullptr), 
-children(nullptr),
-children_count(0),
-association(nullptr),
-bound(rectangle_bound), 
-onclick_event(nullptr), 
-inbound_event(nullptr), 
-outbound_event(nullptr),
-render_func(nullptr),
-update_func(nullptr),
-user_data(nullptr){
-    use_pointer_render_function();
-    use_pointer_update_function();
-}
 Widget::Widget(rect_t rectangle_bound, Widget *parent):
-parent(nullptr), 
+parent(parent), 
 children(nullptr),
 children_count(0),
 association(nullptr),
@@ -70,7 +55,7 @@ update_func(nullptr),
 user_data(nullptr){
     use_pointer_render_function();
     use_pointer_update_function();
-    parent->add_child(this);
+    if (this->parent)parent->add_child(this);
 }
 
 Widget::~Widget() {
