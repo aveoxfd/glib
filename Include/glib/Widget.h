@@ -77,8 +77,14 @@ class Button : public Widget{
         user_data_on_click = user_data;
     }
 
-    void set_on_inbound_event(event_function fn)  { inbound_func  = fn; }
-    void set_on_outbound_event(event_function fn) { outbound_func = fn; }
+    void set_on_inbound_event(event_function fn, void *user_data = nullptr)  { 
+        inbound_func  = fn; 
+        user_data_on_inbound = user_data;
+    }
+    void set_on_outbound_event(event_function fn, void *user_data = nullptr) { 
+        outbound_func = fn;
+        user_data_on_outbound = user_data;
+    }
 
     void render() override {
         if (render_func) render_func(this);
