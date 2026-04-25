@@ -20,7 +20,7 @@ GLIBAPI class Widget{
 
     public:
     Widget(rect_t bound, Widget *parent = nullptr);
-    virtual ~Widget();
+    virtual ~Widget() = default;
     Widget* find_widget(position pos);
     void add_child(Widget *child_widget);
     void remove_child(Widget *child_widget);
