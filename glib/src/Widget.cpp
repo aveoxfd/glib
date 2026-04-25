@@ -34,15 +34,15 @@ bound(rectangle_bound){
     if (this->parent)parent->add_child(this);
 }
 
-Widget::~Widget() {
-    //for (int i = 0; i < children_count; ++i) {
-    //    delete children[i];
-    //}
-    //delete[] children;
-    //delete onclick_event;
-    //delete inbound_event;
-    //delete outbound_event;
-}
+//Widget::~Widget() {
+//    //for (int i = 0; i < children_count; ++i) {
+//    //    delete children[i];
+//    //}
+//    //delete[] children;
+//    //delete onclick_event;
+//    //delete inbound_event;
+//    //delete outbound_event;
+//}
 
 rect_t Widget::get_rect(){
     return bound;
