@@ -106,7 +106,6 @@ void keyboardCallback(Window *window, int key, char pressed){ //TODO!
     return;
 }
 
-
 ClassWindow::ClassWindow(const int width, const int height):window(nullptr), root_widget(nullptr){
     window = WindowCreate(width, height, "glib_window");
     if(!window){}
@@ -147,6 +146,6 @@ int get_keyboard_key(void){
 }
 
 void ClassWindow::update(void){
-    ClearWindow(window, 0x00000000);
+    //ClearWindow(window, 0x00000000); it works
     WindowUpdate(window);
 }
