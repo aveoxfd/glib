@@ -3,17 +3,23 @@
 
 #include "glib.h"
 #include "Event.h"
-#include "Widget.h"
 
 class ClassWindow;
 
 GLIBAPI class Widget{
+    using render_function = void(*)(Widget *);
+    using update_function = void(*)(Widget *, void *);
+
     private:
     Widget *parent;
     Widget **children;
     int children_count = 0;
     Window *association;
     rect_t bound;
+
+    render_function render_func = nullptr;
+    update_function update_func = nullptr;
+    void *user_data_update = nullptr;
 
     friend position get_real_position(Widget *widget);
     bool contains(position pos);
@@ -27,11 +33,21 @@ GLIBAPI class Widget{
     Window* get_associated_window(void); //associated
     void set_associated_window(Window *association);
     rect_t get_rect();
-    void set_position(position_t new_position){bound.pos = new_position;};
+    void set_position(position_t new_position){bound.pos = new_position;}
 
-    virtual void render(){};
-    virtual void update(){};
+    void set_render_function(render_function fn) { render_func = fn; }
+    void set_update_function(update_function fn, void *data = nullptr) {
+        update_func      = fn;
+        user_data_update = data;
+    }
 
+    virtual void render() {
+        if (render_func) render_func(this);
+    }
+    virtual void update() {
+        if (update_func) update_func(this, user_data_update);
+    }
+    
     void mouse_press_handler(int button)            {on_press(button); }
     void mouse_inbound_handler()                    {on_inbound();     }
     void mouse_outbound_handler()                   {on_outbound();    }
@@ -51,9 +67,7 @@ class Button : public Widget{
     using update_function = void(*)(Widget *, void *);
     using event_function = void(*)(Widget *, void *);
 
-    render_function render_func = nullptr;
-    update_function update_func = nullptr;
-    void *user_data_update = nullptr;
+
     event_function on_click_function = nullptr;
     void *user_data_on_click = nullptr;
 
@@ -65,13 +79,6 @@ class Button : public Widget{
     public:
     Button(rect_t bound, Widget *parent = nullptr) : Widget(bound, parent){}
 
-    void set_render_function(render_function render_func){
-        this->render_func = render_func;
-    }
-    void set_update_function(update_function update_func, void *user_data){
-        this->update_func = update_func;
-        user_data_update = user_data;
-    }
     void on_click(event_function e = nullptr, void *user_data = nullptr){
         on_click_function = e;
         user_data_on_click = user_data;
@@ -84,13 +91,6 @@ class Button : public Widget{
     void set_on_outbound_event(event_function fn, void *user_data = nullptr) { 
         outbound_func = fn;
         user_data_on_outbound = user_data;
-    }
-
-    void render() override {
-        if (render_func) render_func(this);
-    }
-    void update() override {
-        if (update_func) update_func(this, user_data_update);
     }
 
     protected:
