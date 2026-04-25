@@ -3,10 +3,12 @@
 #include <iostream>
 #include <new>
 
+/*
+TODO: FIX
+*/
+
 #define POINTER 0
 #define VIRTUAL 1
-
-position get_real_position(Widget *widget);
 
 position get_real_position(Widget *widget){
     position real_position = widget->bound.pos;
@@ -23,38 +25,12 @@ bool Widget::contains(position pos){
         && pos.y >= real.y && pos.y < bound.size.height + real.y;
 }
 
-void Widget::update(){
-    switch(update_function_type){
-        case POINTER:
-        if (update_func)update_func(this, user_data);
-        break;
-
-        case VIRTUAL:
-        virtual_update_function();
-        break;
-    }
-    return;
-}
-
-void Widget::set_update_function(update_function function, void *user_data){
-    this->user_data = user_data;
-    if (function)update_func = function;
-}
-
 Widget::Widget(rect_t rectangle_bound, Widget *parent):
 parent(parent), 
 children(nullptr),
 children_count(0),
 association(nullptr),
-bound(rectangle_bound), 
-onclick_event(nullptr), 
-inbound_event(nullptr), 
-outbound_event(nullptr),
-render_func(nullptr),
-update_func(nullptr),
-user_data(nullptr){
-    use_pointer_render_function();
-    use_pointer_update_function();
+bound(rectangle_bound){
     if (this->parent)parent->add_child(this);
 }
 
@@ -72,18 +48,6 @@ rect_t Widget::get_rect(){
     return bound;
 }
 
-void Widget::on_click(Event *event){
-    if (event)onclick_event = event;
-}
-
-void Widget::in_bound(Event *event){
-    if(event)inbound_event = event;
-}
-
-void Widget::out_bound(Event *event){
-    if(event)outbound_event = event;
-}
-
 Window* Widget::get_associated_window(){
     if (association)return association;
     return nullptr;
@@ -96,44 +60,6 @@ void Widget::set_associated_window(Window *association){
         children[i]->set_associated_window(association);
     }
 }
-
-void Widget::set_render_function(render_function function){
-    if (function)render_func = function;
-}
-
-void Widget::mouse_press_handler(int button){
-    if (onclick_event && button == 0){ //left button
-        onclick_event->activate(this);
-    }
-}
-
-void Widget::mouse_inbound_handler(){
-    if (inbound_event){
-        inbound_event->activate(this);
-    }
-}
-
-void Widget::mouse_outbound_handler(){
-    if (outbound_event)outbound_event->activate(this);
-}
-
-void Widget::render(){
-    switch(render_function_type){
-        case POINTER:
-        if (render_func)render_func(this);
-        break;
-        case VIRTUAL:
-        virtual_render_function();
-        break;
-
-        default:
-        break;
-    }
-}
-
-void Widget::virtual_update_function(){}
-
-void Widget::virtual_render_function(){}
 
 Widget* Widget::find_widget(position pos){
     if (!contains(pos)){
