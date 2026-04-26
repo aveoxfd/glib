@@ -1,4 +1,4 @@
-#include "Widget.h"
+#include "widget/Widget.h"
 #include "../../include/nwind/nwind.h"
 #include <iostream>
 #include <new>
@@ -141,4 +141,18 @@ void Widget::remove_child(Widget* child_widget){ //removes a child element from 
     child_widget->parent = nullptr;
     child_widget->set_associated_window(nullptr);
     return;
+}
+
+void Widget::update_tree(){
+    update();
+    for (int i = 0; i < children_count; ++i){
+        children[i]->update_tree();
+    }
+}
+
+void Widget::render_tree(){
+    render();
+    for (int i = 0; i < children_count; ++i){
+        children[i]->render_tree();
+    }
 }
