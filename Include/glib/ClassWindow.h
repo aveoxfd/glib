@@ -12,6 +12,8 @@ GLIBAPI class ClassWindow{
     private:
     Window *window;
     Widget *root_widget; //main widget
+    Widget *focused = nullptr;
+
     public:
     ClassWindow(const int width, const int height);
     ~ClassWindow();
@@ -22,6 +24,8 @@ GLIBAPI class ClassWindow{
     int get_keyboard_key(void);
     void update(void);
     void start_cycle();
+    void set_focus(Widget *widget);
+    Widget *get_focused(void);
 };
 typedef ClassWindow CWindow;
 

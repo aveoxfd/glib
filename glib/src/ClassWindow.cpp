@@ -68,6 +68,7 @@ void mouse_button_callback(Window* wnd, int button, char pressed){
     Widget* target = root->find_widget(Mouse::pos);
     if(target == nullptr)return;
 
+    window->set_focus(target);
     target->mouse_press_handler(Mouse::button);
     return;
 }
@@ -103,6 +104,13 @@ void mouse_move_callback(Window *wnd, int x, int y){
 void keyboardCallback(Window *window, int key, char pressed){ //TODO!
     Keyboard::key = key;
 
+    CWindow *classwindow = findwindow(window);
+    if (!classwindow)return;
+
+    Widget *focused = classwindow->get_focused();
+    if(!focused)return;
+
+    focused->keyboard_handler(key, pressed);
     
     return;
 }
@@ -157,4 +165,11 @@ void ClassWindow::start_cycle(){
 
         WindowUpdate(window);
     }
+}
+void ClassWindow::set_focus(Widget *widget){
+    focused = widget;
+}
+
+Widget* ClassWindow::get_focused(void){
+    return focused;
 }
