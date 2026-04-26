@@ -1,7 +1,7 @@
 # glib
 
 A lightweight C++ widget library for Windows built on top of **nwind** — a minimal WinAPI wrapper.  
-Provides a widget tree, event routing, and a simple rendering pipeline via direct pixel access.
+Provides a widget tree, automatic event routing, and a pixel-based rendering pipeline.
 
 ---
 
@@ -10,9 +10,10 @@ Provides a widget tree, event routing, and a simple rendering pipeline via direc
 ```
 nwind                    — low-level window, bitmap, WinAPI events
   └── glib
-        ├── ClassWindow  — links nwind window to a widget tree, routes events
+        ├── ClassWindow  — links nwind window to widget tree, routes events
         ├── Widget       — base class: tree, geometry, event dispatching
-        └── Button       — widget with click / hover / render callbacks
+        ├── Button       — widget with click / hover / render callbacks
+        └── Frame        — container with background render
 ```
 
 ---
@@ -21,37 +22,36 @@ nwind                    — low-level window, bitmap, WinAPI events
 
 ```cpp
 #include "include/glib/glib.h"
-#include "include/nwind/nwind.h"
 
 int main() {
     ClassWindow window(800, 600);
 
-    Widget root(rect_t{{0, 0}, {800, 600}});
-    Button btn(rect_t{{50, 50}, {150, 50}});
-
-    btn.set_render_function([](Widget *wid) {
-        Window *win   = wid->get_associated_window();
-        position real = get_real_position(wid);
-        rect_t   b    = wid->get_rect();
+    Frame page(rect_t{{0, 0}, {800, 600}});
+    page.set_render_function([](Frame *f) {
+        Window   *win  = f->get_associated_window();
+        position  real = get_real_position(f);
+        rect_t    b    = f->get_rect();
         for (int dy = 0; dy < b.size.height; ++dy)
             for (int dx = 0; dx < b.size.width; ++dx)
-                putpixel(win, real.x + dx, real.y + dy, 0xFFFFFFFF);
+                putpixel(win, real.x + dx, real.y + dy, 0xFF222222);
     });
 
-    btn.on_click([](Widget *wid, void *) {
+    Button btn(rect_t{{50, 50}, {150, 50}});
+    btn.set_render_function([](Button *b) {
+        Window   *win  = b->get_associated_window();
+        position  real = get_real_position(b);
+        rect_t    bd   = b->get_rect();
+        for (int dy = 0; dy < bd.size.height; ++dy)
+            for (int dx = 0; dx < bd.size.width; ++dx)
+                putpixel(win, real.x + dx, real.y + dy, 0xFFFFFFFF);
+    });
+    btn.on_click([](Button *b, void *) {
         // handle click
     });
 
-    root.add_child(&btn);
-    window.set_widget(&root);
-    Window *win = root.get_associated_window();
-
-    while (MessageProcess()) {
-        ClearWindow(win, 0xFF222222);
-        btn.update();
-        btn.render();
-        WindowUpdate(win);
-    }
+    page.add_child(&btn);
+    window.set_widget(&page);
+    window.start_cycle();           // handles everything automatically
 }
 ```
 
@@ -59,76 +59,85 @@ int main() {
 
 ## Main Loop
 
-The correct order every frame:
+`start_cycle()` handles the loop automatically:
 
 ```cpp
-while (MessageProcess()) {
-    ClearWindow(win, background);  // 1. erase previous frame
-    widget.update();               // 2. update state / position
-    widget.render();               // 3. draw
-    WindowUpdate(win);             // 4. present to screen
-}
+window.start_cycle();
+// internally:
+// while (MessageProcess()) {
+//     root->update_tree();   // update all widgets recursively
+//     root->render_tree();   // render all widgets recursively
+//     WindowUpdate(window);  // present frame to screen
+// }
 ```
 
-> ⚠️ Never call `WindowUpdate` inside `update_func` — it will cause a visual trail  
-> because the frame is presented before `ClearWindow` runs.
+> ⚠️ Never call `WindowUpdate` inside `update_func` — it presents the frame before the tree  
+> has finished updating, which causes a visual trail.
 
 ---
 
 ## Widget
 
-Base class for all UI elements. Manages the widget tree and dispatches input events.
+Base class for all UI elements. Manages the widget tree and dispatches input events.  
+Not visible by itself — subclasses define how they look and behave.
 
 ```cpp
-Widget root(rect_t{{0, 0}, {800, 600}});
-
 // Tree
-root.add_child(&child);
-root.remove_child(&child);
-Widget *hit = root.find_widget(mouse_pos); // deepest widget at position
+widget.add_child(&child);
+widget.remove_child(&child);
+Widget *hit = widget.find_widget(pos); // deepest widget at position
 
 // Geometry
-root.get_rect();
-root.set_position({x, y});
-get_real_position(&root); // absolute position (sum of all ancestors)
-
-// Render / update — override in subclasses or set via Button
-virtual void render() {}
-virtual void update() {}
+widget.get_rect();
+widget.set_position({x, y});
+get_real_position(&widget);  // absolute screen position (sums all ancestors)
+                             // bound.pos is relative to parent — always use this for drawing
 ```
 
-### Event hooks (override in subclasses)
+### Tree traversal
 
 ```cpp
-virtual void on_press(int button) {}
-virtual void on_inbound()         {}  // mouse entered
-virtual void on_outbound()        {}  // mouse left
-virtual void on_key(int key, char pressed) {}
+widget.render_tree();   // render self, then all children recursively
+widget.update_tree();   // update self, then all children recursively
 ```
+
+`start_cycle()` calls both automatically every frame.
+
+### Event hooks — override in subclasses
+
+```cpp
+virtual void on_press(int button)          {}  // left click: button == 0
+virtual void on_inbound()                  {}  // mouse entered
+virtual void on_outbound()                 {}  // mouse left
+virtual void on_key(int key, char pressed) {}  // keyboard (when focused)
+```
+
+Keyboard focus is set automatically when the user clicks a widget.
 
 ---
 
 ## Button
 
-Subclass of `Widget` with callback-based event handling and runtime-swappable render/update functions.
+Subclass of `Widget`. Callbacks accept `Button*` — all Button methods are available inside them.
 
 ```cpp
 Button btn(rect_t{{x, y}, {w, h}});
-Button btn(rect_t{{x, y}, {w, h}}, &parent_widget); // with parent
+Button btn(rect_t{{x, y}, {w, h}}, &parent_widget);
 ```
 
 ### Render
 
 ```cpp
-btn.set_render_function([](Widget *wid) {
-    // draw pixels via putpixel()
+btn.set_render_function([](Button *btn) {
+    // draw via putpixel()
+    // use get_real_position(btn) for absolute coordinates
 });
 ```
 
 ### Update (runs every frame)
 
 ```cpp
-btn.set_update_function([](Widget *wid, void *data) {
+btn.set_update_function([](Button *btn, void *data) {
     // update position, state, etc.
     // do NOT call WindowUpdate here
 }, user_data);
@@ -137,42 +146,43 @@ btn.set_update_function([](Widget *wid, void *data) {
 ### Events
 
 ```cpp
-btn.on_click([](Widget *wid, void *data) {
-    // left mouse button click
+btn.on_click([](Button *btn, void *data) {
+    // left mouse button
 }, user_data);
 
-btn.set_on_inbound_event([](Widget *wid, void *data) {
-    // mouse entered the widget bounds
+btn.set_on_inbound_event([](Button *btn, void *data) {
+    // mouse entered
 }, user_data);
 
-btn.set_on_outbound_event([](Widget *wid, void *data) {
-    // mouse left the widget bounds
+btn.set_on_outbound_event([](Button *btn, void *data) {
+    // mouse left
 }, user_data);
 ```
 
-### Hover color change example
+### Hover example
 
 ```cpp
-btn.set_render_function([](Widget *wid) { fill_rect(wid, 0xFFFFFFFF); });
+btn.set_render_function([](Button *btn) { fill_rect(btn, 0xFFFFFFFF); });
 
-btn.set_on_inbound_event([](Widget *wid, void *) {
-    wid->set_render_function([](Widget *wid) { fill_rect(wid, 0xFFFF0000); });
+btn.set_on_inbound_event([](Button *btn, void *) {
+    btn->set_render_function([](Button *btn) { fill_rect(btn, 0xFFFF0000); });
 });
-btn.set_on_outbound_event([](Widget *wid, void *) {
-    wid->set_render_function([](Widget *wid) { fill_rect(wid, 0xFFFFFFFF); });
+btn.set_on_outbound_event([](Button *btn, void *) {
+    btn->set_render_function([](Button *btn) { fill_rect(btn, 0xFFFFFFFF); });
 });
 ```
 
 ### Drag example
 
 ```cpp
-btn.on_click([](Widget *wid, void *) {
-    ClassWindow *cw = findwindow(wid->get_associated_window());
+btn.on_click([](Button *btn, void *) {
+    ClassWindow *cw = findwindow(btn->get_associated_window());
     if (!cw) return;
-    wid->set_update_function([](Widget *wid, void *data) {
-        position mouse = ((ClassWindow *)data)->get_mouse_position();
-        rect_t b = wid->get_rect();
-        wid->set_position({mouse.x - b.size.width / 2,
+    btn->set_update_function([](Button *btn, void *data) {
+        ClassWindow *cw = (ClassWindow *)data;
+        position mouse  = cw->get_mouse_position();
+        rect_t b        = btn->get_rect();
+        btn->set_position({mouse.x - b.size.width  / 2,
                            mouse.y - b.size.height / 2});
     }, cw);
 });
@@ -180,16 +190,40 @@ btn.on_click([](Widget *wid, void *) {
 
 ---
 
+## Frame
+
+Container widget with a background render function. Groups child widgets.  
+Does not handle click or hover by itself.
+
+```cpp
+Frame page(rect_t{{0, 0}, {800, 600}});
+
+page.set_render_function([](Frame *f) {
+    // draw background
+});
+
+page.add_child(&btn1);
+page.add_child(&btn2);
+
+window.set_widget(&page);
+window.start_cycle();   // Frame renders first, then children via render_tree
+```
+
+---
+
 ## ClassWindow
 
 ```cpp
-ClassWindow window(800, 600);   // creates window 800×600
-window.set_widget(&root);       // attach root widget
+ClassWindow window(800, 600);
+window.set_widget(&root);       // attach root, propagates Window* to whole tree
+window.start_cycle();           // enter main loop
 
 window.get_mouse_position();    // current cursor position
 window.get_mouse_button();      // last pressed button
 window.get_keyboard_key();      // last pressed key
-window.update();                // calls WindowUpdate (use only if needed outside main loop)
+window.set_focus(widget);       // manually set keyboard focus
+window.get_focused();           // get currently focused widget
+window.update();                // WindowUpdate — use outside start_cycle if needed
 
 findwindow(Window *native);     // find ClassWindow by nwind Window*
 ```
@@ -204,54 +238,61 @@ Low-level functions used directly for rendering:
 putpixel(Window *wnd, int x, int y, unsigned int color); // write pixel (ARGB)
 ClearWindow(Window *wnd, int color);                     // fill entire window
 WindowUpdate(Window *wnd);                               // present frame to screen
-MessageProcess();                                        // process event queue, returns 0 on close
+MessageProcess();                                        // process event queue, 0 on close
 ```
 
 ---
 
 ## Widget Tree
 
-Widgets form a parent-child tree. Position is relative to the parent.  
-`get_real_position()` returns the absolute screen position by summing all ancestors.
+Widgets form a parent-child tree. `bound.pos` is relative to the parent.  
+Use `get_real_position()` to get the absolute screen coordinates for drawing.
 
 ```cpp
-Widget root(rect_t{{0, 0}, {800, 600}});
-Button panel(rect_t{{100, 100}, {300, 200}});
-Button btn(rect_t{{10, 10}, {80, 30}});  // at (110, 110) on screen
+Frame page(rect_t{{0, 0}, {800, 600}});
+Frame panel(rect_t{{100, 100}, {300, 200}});
+Button btn(rect_t{{10, 10}, {80, 30}});  // drawn at (110, 110) on screen
 
-root.add_child(&panel);
+page.add_child(&panel);
 panel.add_child(&btn);
 
-window.set_widget(&root);
-// set_widget recursively propagates the Window* to all children
+window.set_widget(&page);
+// set_widget recursively propagates Window* to all children
 ```
 
-`find_widget(pos)` searches children from last to first (last added = drawn on top).
+`find_widget(pos)` searches children from last to first — last added is drawn on top.
 
 ---
 
-## Extending Widget
+## Custom Widgets
 
-Create your own widget type by inheriting from `Widget`:
+Inherit from `Widget` and override virtual methods:
 
 ```cpp
-class MyWidget : public Widget {
+class Toggle : public Widget {
     bool active = false;
 
 public:
-    MyWidget(rect_t bound, Widget *parent = nullptr)
+    Toggle(rect_t bound, Widget *parent = nullptr)
         : Widget(bound, parent) {}
 
     void render() override {
-        fill_rect(this, active ? 0xFF00FF00 : 0xFF333333);
+        Window   *win  = get_associated_window();
+        position  real = get_real_position(this);
+        rect_t    b    = get_rect();
+        unsigned int color = active ? 0xFF00FF00 : 0xFF333333;
+        for (int dy = 0; dy < b.size.height; ++dy)
+            for (int dx = 0; dx < b.size.width; ++dx)
+                putpixel(win, real.x + dx, real.y + dy, color);
     }
 
 protected:
     void on_press(int button) override {
         if (button == 0) active = !active;
     }
-    void on_inbound()  override { /* mouse entered */ }
-    void on_outbound() override { /* mouse left    */ }
+    void on_key(int key, char pressed) override {
+        // receives keyboard input when focused
+    }
 };
 ```
 
@@ -259,5 +300,5 @@ protected:
 
 ## Platform
 
-- **Windows only** (uses WinAPI, DIB sections, `GetCursorPos`)
+- **Windows only** (WinAPI, DIB sections, `GetCursorPos`)
 - C++17 or later
