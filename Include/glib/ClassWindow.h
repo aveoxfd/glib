@@ -1,9 +1,11 @@
 #ifndef CLASSWINDOW_H
 #define CLASSWINDOW_H
 
-#include "../nwind/nwind.h"
-#include "glib.h"
+#include "glib_api.h"
+#include "structures/structs.h"
+
 class Widget;
+typedef Window Window;
 
 
 GLIBAPI class ClassWindow{
@@ -19,6 +21,7 @@ GLIBAPI class ClassWindow{
     int get_mouse_button(void);
     int get_keyboard_key(void);
     void update(void);
+    void start_cycle();
 };
 typedef ClassWindow CWindow;
 
