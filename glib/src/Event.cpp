@@ -1,5 +1,5 @@
 #include "Event.h"
-#include "Widget.h"
+#include "widget/Widget.h"
 
 Event::Event(EventFunction function, void* user_data, Widget *connected):
 event_function(function),
