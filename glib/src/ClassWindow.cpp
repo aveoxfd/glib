@@ -1,4 +1,5 @@
 #include "ClassWindow.h"
+#include "widget/Widget.h"
 #include <windows.h>
 #include "../../include/nwind/nwind.h"
 
@@ -146,6 +147,14 @@ int get_keyboard_key(void){
 }
 
 void ClassWindow::update(void){
-    //ClearWindow(window, 0x00000000); it works
     WindowUpdate(window);
+}
+
+void ClassWindow::start_cycle(){
+    while (MessageProcess()){
+        root_widget->update_tree();
+        root_widget->render_tree();
+
+        WindowUpdate(window);
+    }
 }
