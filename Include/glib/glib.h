@@ -1,20 +1,15 @@
 #ifndef GLIB_H
 #define GLIB_H
 
-#define GLIBAPI
-
-#ifdef DLLBUILD
-#define GLIBAPI __attribute__(dllexport)
-#endif
-
-#if defined (USEDLL)
-#define GLIBAPI __attribute__(dllimport)
-#endif
+#include "glib_api.h"
 
 #include "../nwind/nwind.h"
 #include "structures/structs.h"
+#include "widget/Widget.h"
 #include "ClassWindow.h"
-#include "Widget.h"
 #include "Event.h"
+
+#include "widget/Button.h"
+#include "widget/Frame.h"
 
 #endif
