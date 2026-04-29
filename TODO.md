@@ -2,4 +2,3 @@
 
 - Timer
 - Thread
-- ~~Event~~
