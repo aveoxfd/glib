@@ -1,0 +1,2 @@
+C:\PROGRA~1\msys64\ucrt64\bin\ar.exe qc C:\Users\aveox\Desktop\git\glib\glib\lib\glib.lib CMakeFiles/glib.dir/glib/src/ClassWindow.cpp.obj CMakeFiles/glib.dir/glib/src/Widget.cpp.obj CMakeFiles/glib.dir/glib/src/Event.cpp.obj
+C:\PROGRA~1\msys64\ucrt64\bin\ranlib.exe C:\Users\aveox\Desktop\git\glib\glib\lib\glib.lib

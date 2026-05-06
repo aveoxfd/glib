@@ -3,7 +3,7 @@
 
 class Widget;
 
-class Event{
+class Event{ //it isn't used
     private:
     typedef void(*EventFunction)(Widget* sender, void *user_data);
     EventFunction event_function;

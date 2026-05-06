@@ -1,4 +1,4 @@
-#include "widget/Widget.h"
+#include "../../include/glib/widget/Widget.h"
 #include "../../include/nwind/nwind.h"
 #include <iostream>
 #include <new>

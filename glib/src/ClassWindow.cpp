@@ -1,5 +1,5 @@
-#include "ClassWindow.h"
-#include "widget/Widget.h"
+#include "../../include/glib/ClassWindow.h"
+#include "../../include/glib/widget/Widget.h"
 #include <windows.h>
 #include "../../include/nwind/nwind.h"
 

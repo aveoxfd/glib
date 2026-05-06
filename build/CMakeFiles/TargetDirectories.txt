@@ -1,0 +1,3 @@
+C:/Users/aveox/Desktop/git/glib/build/CMakeFiles/glib.dir
+C:/Users/aveox/Desktop/git/glib/build/CMakeFiles/edit_cache.dir
+C:/Users/aveox/Desktop/git/glib/build/CMakeFiles/rebuild_cache.dir
