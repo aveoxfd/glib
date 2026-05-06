@@ -304,6 +304,16 @@ CMakeFiles/glib.dir/glib/src/ClassWindow.cpp.obj: C:/Users/aveox/Desktop/git/gli
   C:/Users/aveox/Desktop/git/glib/include/glib/widget/Widget.h \
   C:/Users/aveox/Desktop/git/glib/include/nwind/nwind.h
 
+CMakeFiles/glib.dir/glib/src/Event.cpp.obj: C:/Users/aveox/Desktop/git/glib/glib/src/Event.cpp \
+  C:/Users/aveox/Desktop/git/glib/include/glib/Event.h \
+  C:/Users/aveox/Desktop/git/glib/include/glib/glib_api.h \
+  C:/Users/aveox/Desktop/git/glib/include/glib/structures/WindowEntry.h \
+  C:/Users/aveox/Desktop/git/glib/include/glib/structures/position.h \
+  C:/Users/aveox/Desktop/git/glib/include/glib/structures/rectangle.h \
+  C:/Users/aveox/Desktop/git/glib/include/glib/structures/size.h \
+  C:/Users/aveox/Desktop/git/glib/include/glib/structures/structs.h \
+  C:/Users/aveox/Desktop/git/glib/include/glib/widget/Widget.h
+
 CMakeFiles/glib.dir/glib/src/Widget.cpp.obj: C:/Users/aveox/Desktop/git/glib/glib/src/Widget.cpp \
   C:/Program\ Files/msys64/ucrt64/include/_mingw.h \
   C:/Program\ Files/msys64/ucrt64/include/_mingw_mac.h \
@@ -611,6 +621,8 @@ C:/Program\ Files/msys64/ucrt64/include/consoleapi3.h:
 C:/Program\ Files/msys64/ucrt64/include/ioapiset.h:
 
 C:/Program\ Files/msys64/ucrt64/include/c++/15.2.0/bits/basic_ios.h:
+
+C:/Users/aveox/Desktop/git/glib/glib/src/Event.cpp:
 
 C:/Program\ Files/msys64/ucrt64/include/corecrt.h:
 
@@ -1165,6 +1177,8 @@ C:/Program\ Files/msys64/ucrt64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/xmmint
 C:/Program\ Files/msys64/ucrt64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/xsavecintrin.h:
 
 C:/Program\ Files/msys64/ucrt64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/xsaveintrin.h:
+
+C:/Users/aveox/Desktop/git/glib/include/glib/Event.h:
 
 C:/Program\ Files/msys64/ucrt64/lib/gcc/x86_64-w64-mingw32/15.2.0/include/xsaveoptintrin.h:
 
