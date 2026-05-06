@@ -1,11 +1,19 @@
 #include "../../include/glib/ClassWindow.h"
 #include "../../include/glib/widget/Widget.h"
-#include <windows.h>
 #include "../../include/nwind/nwind.h"
+#include <windows.h>
 
 #ifdef DEBUG
 #include <iostream>
 #endif
+
+//typedef void (*on_timer_function)(Window *window, void*);
+
+struct TIMER_ENTRY{
+    UINT_PTR id;
+    on_timer_function function;
+    //ClassWindow *owner; ????
+};typedef TIMER_ENTRY TIMER_ENTRY;
 
 namespace Mouse{
     inline position pos;
@@ -101,7 +109,7 @@ void mouse_move_callback(Window *wnd, int x, int y){
     return;
 }
 
-void keyboardCallback(Window *window, int key, char pressed){ //TODO!
+void keyboard_callback(Window *window, int key, char pressed){
     Keyboard::key = key;
 
     CWindow *classwindow = findwindow(window);
@@ -115,6 +123,20 @@ void keyboardCallback(Window *window, int key, char pressed){ //TODO!
     return;
 }
 
+void timer_callback(Window *window, WPARAM wParam/*= id*/){
+
+    //TODO: Logic
+    CWindow *classwindow = findwindow(window);
+
+    if(!classwindow) return;
+
+    on_timer_function function = classwindow->find_timer_function(wParam);
+
+    if(function) function(window, nullptr);
+
+    return;
+}
+
 ClassWindow::ClassWindow(const int width, const int height):window(nullptr), root_widget(nullptr){
     window = WindowCreate(width, height, "glib_window");
     if(!window){}
@@ -123,7 +145,7 @@ ClassWindow::ClassWindow(const int width, const int height):window(nullptr), roo
 
     WindowSetMouseButtonCallback(window, mouse_button_callback);
     WindowSetMouseMoveCallback(window, mouse_move_callback);
-    WindowSetKeyCallback(window, keyboardCallback);
+    WindowSetKeyCallback(window, keyboard_callback);
 }
 
 ClassWindow::~ClassWindow(){
@@ -173,3 +195,10 @@ void ClassWindow::set_focus(Widget *widget){
 Widget* ClassWindow::get_focused(void){
     return focused;
 }
+
+//TODO!
+void ClassWindow::regont_function(on_timer_function function){}
+
+void ClassWindow::delont_function(on_timer_function function){}
+
+on_timer_function ClassWindow::find_timer_function(WPARAM wParam){}
