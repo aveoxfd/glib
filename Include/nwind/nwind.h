@@ -14,7 +14,7 @@
 #define NWINDAPI __declspec(dlimport)
 #endif
 #endif
-
+#include <windows.h>
 #if defined (cplusplus) || defined (c_plusplus) || defined (__cplusplus)
 extern "C" {
 #endif
