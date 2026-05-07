@@ -3,13 +3,23 @@
 
 #include "glib_api.h"
 #include "structures/structs.h"
+#include <windows.h>
 
 class Widget;
 typedef Window Window;
-typedef TIMER_ENTRY TIMER_ENTRY;
-typedef TIMER_ENTRY_ARRTYPE TIMER_ENTRY_ARRTYPE;
+
 typedef void (*on_timer_function)(void*);
-//typedef on_timer_function on_timer_function;
+
+struct TIMER_ENTRY {
+    UINT_PTR id;
+    void *user_data;
+    on_timer_function function;
+};
+
+struct TIMER_ENTRY_ARRTYPE {
+    TIMER_ENTRY *array = nullptr;
+    int array_count = 0;
+};
 
 GLIBAPI class ClassWindow{
     private:

@@ -9,16 +9,16 @@
 
 //typedef void (*on_timer_function)(Window *window, void*);
 
-struct TIMER_ENTRY{
-    UINT_PTR id;
-    void* user_data;
-    on_timer_function function;
-};typedef TIMER_ENTRY TIMER_ENTRY;
-
-struct TIMER_ENTRY_ARRTYPE{
-    TIMER_ENTRY *array;
-    int array_count;
-};typedef TIMER_ENTRY_ARRTYPE TIMER_ENTRY_ARRTYPE;
+//struct TIMER_ENTRY{
+//    UINT_PTR id;
+//    void* user_data;
+//    on_timer_function function;
+//};typedef TIMER_ENTRY TIMER_ENTRY;
+//
+//struct TIMER_ENTRY_ARRTYPE{
+//    TIMER_ENTRY *array;
+//    int array_count;
+//};typedef TIMER_ENTRY_ARRTYPE TIMER_ENTRY_ARRTYPE;
 
 namespace Mouse{
     inline position pos;
@@ -225,12 +225,22 @@ void ClassWindow::regont_function(on_timer_function function, void* user_data/*=
 }
 
 void ClassWindow::delont_function(on_timer_function function){ //<====
-    if (!TE.array || !function)return;
+    if (!TE.array || !function) return;
 
-    TIMER_ENTRY *temp = new TIMER_ENTRY [TE.array_count - 1];
+    UINT_PTR kill_id = 0;
+    for (int i = 0; i < TE.array_count; ++i)
+        if (TE.array[i].function == function) { kill_id = TE.array[i].id; break; }
 
-    for (int i = 0, j = 0; i < TE.array_count; ++i){
-    }
+    if (!kill_id) return;
+    WindowKillTimer(window, kill_id);
+
+    TIMER_ENTRY *temp = new TIMER_ENTRY[TE.array_count - 1];
+    for (int i = 0, j = 0; i < TE.array_count; ++i)
+        if (TE.array[i].id != kill_id) temp[j++] = TE.array[i];
+
+    delete[] TE.array;
+    TE.array = temp;
+    --TE.array_count;
     return;
 }
 
