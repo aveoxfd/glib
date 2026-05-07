@@ -1,7 +1,6 @@
 #include "../../include/glib/ClassWindow.h"
 #include "../../include/glib/widget/Widget.h"
 #include "../../include/nwind/nwind.h"
-#include <windows.h>
 
 #ifdef DEBUG
 #include <iostream>
@@ -138,7 +137,7 @@ void timer_callback(Window *window, WPARAM wParam/*= id*/){ //calls by nwind
 
     TIMER_ENTRY *te_ptr = classwindow->find_timer_function_TE(wParam);
 
-    if(te_ptr->function) te_ptr->function(te_ptr->user_data);
+    if(te_ptr && te_ptr->function) te_ptr->function(te_ptr->user_data);
 
     return;
 }
@@ -224,7 +223,7 @@ void ClassWindow::regont_function(on_timer_function function, void* user_data/*=
     return;
 }
 
-void ClassWindow::delont_function(on_timer_function function){ //<====
+void ClassWindow::delont_function(on_timer_function function){ //<==== may have a bug
     if (!TE.array || !function) return;
 
     UINT_PTR kill_id = 0;
