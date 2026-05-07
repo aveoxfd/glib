@@ -7,7 +7,8 @@
 class Widget;
 typedef Window Window;
 typedef TIMER_ENTRY TIMER_ENTRY;
-typedef void (*on_timer_function)(Window *window, void*);
+typedef TIMER_ENTRY_ARRTYPE TIMER_ENTRY_ARRTYPE;
+typedef void (*on_timer_function)(void*);
 //typedef on_timer_function on_timer_function;
 
 GLIBAPI class ClassWindow{
@@ -15,7 +16,8 @@ GLIBAPI class ClassWindow{
     Window *window;
     Widget *root_widget; //main widget
     Widget *focused = nullptr;
-    TIMER_ENTRY *timer_associated_array = nullptr;
+
+    TIMER_ENTRY_ARRTYPE TE;
 
     public:
     ClassWindow(const int width, const int height);
@@ -29,9 +31,10 @@ GLIBAPI class ClassWindow{
     void start_cycle();
     void set_focus(Widget *widget);
     Widget *get_focused(void);
-    void regont_function(on_timer_function function);       //register on_timer_function
-    void delont_function(on_timer_function function);       //delete on_timer_function
+    void regont_function(on_timer_function function, void* user_data, UINT interval_ms);    //register on_timer_function
+    void delont_function(on_timer_function function);                                       //delete on_timer_function
     on_timer_function find_timer_function(WPARAM wParam);
+    TIMER_ENTRY* find_timer_function_TE(WPARAM wParam);
 };
 typedef ClassWindow CWindow;
 

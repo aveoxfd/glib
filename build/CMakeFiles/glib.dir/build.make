@@ -76,45 +76,45 @@ CMakeFiles/glib.dir/glib/src/ClassWindow.cpp.obj: CMakeFiles/glib.dir/includes_C
 CMakeFiles/glib.dir/glib/src/ClassWindow.cpp.obj: C:/Users/aveox/Desktop/git/glib/glib/src/ClassWindow.cpp
 CMakeFiles/glib.dir/glib/src/ClassWindow.cpp.obj: CMakeFiles/glib.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\aveox\Desktop\git\glib\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/glib.dir/glib/src/ClassWindow.cpp.obj"
-	C:\PROGRA~1\msys64\ucrt64\bin\C__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/glib.dir/glib/src/ClassWindow.cpp.obj -MF CMakeFiles\glib.dir\glib\src\ClassWindow.cpp.obj.d -o CMakeFiles\glib.dir\glib\src\ClassWindow.cpp.obj -c C:\Users\aveox\Desktop\git\glib\glib\src\ClassWindow.cpp
+	C:\PROGRA~1\msys64\ucrt64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/glib.dir/glib/src/ClassWindow.cpp.obj -MF CMakeFiles\glib.dir\glib\src\ClassWindow.cpp.obj.d -o CMakeFiles\glib.dir\glib\src\ClassWindow.cpp.obj -c C:\Users\aveox\Desktop\git\glib\glib\src\ClassWindow.cpp
 
 CMakeFiles/glib.dir/glib/src/ClassWindow.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/glib.dir/glib/src/ClassWindow.cpp.i"
-	C:\PROGRA~1\msys64\ucrt64\bin\C__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\aveox\Desktop\git\glib\glib\src\ClassWindow.cpp > CMakeFiles\glib.dir\glib\src\ClassWindow.cpp.i
+	C:\PROGRA~1\msys64\ucrt64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\aveox\Desktop\git\glib\glib\src\ClassWindow.cpp > CMakeFiles\glib.dir\glib\src\ClassWindow.cpp.i
 
 CMakeFiles/glib.dir/glib/src/ClassWindow.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/glib.dir/glib/src/ClassWindow.cpp.s"
-	C:\PROGRA~1\msys64\ucrt64\bin\C__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\aveox\Desktop\git\glib\glib\src\ClassWindow.cpp -o CMakeFiles\glib.dir\glib\src\ClassWindow.cpp.s
+	C:\PROGRA~1\msys64\ucrt64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\aveox\Desktop\git\glib\glib\src\ClassWindow.cpp -o CMakeFiles\glib.dir\glib\src\ClassWindow.cpp.s
 
 CMakeFiles/glib.dir/glib/src/Widget.cpp.obj: CMakeFiles/glib.dir/flags.make
 CMakeFiles/glib.dir/glib/src/Widget.cpp.obj: CMakeFiles/glib.dir/includes_CXX.rsp
 CMakeFiles/glib.dir/glib/src/Widget.cpp.obj: C:/Users/aveox/Desktop/git/glib/glib/src/Widget.cpp
 CMakeFiles/glib.dir/glib/src/Widget.cpp.obj: CMakeFiles/glib.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\aveox\Desktop\git\glib\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/glib.dir/glib/src/Widget.cpp.obj"
-	C:\PROGRA~1\msys64\ucrt64\bin\C__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/glib.dir/glib/src/Widget.cpp.obj -MF CMakeFiles\glib.dir\glib\src\Widget.cpp.obj.d -o CMakeFiles\glib.dir\glib\src\Widget.cpp.obj -c C:\Users\aveox\Desktop\git\glib\glib\src\Widget.cpp
+	C:\PROGRA~1\msys64\ucrt64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/glib.dir/glib/src/Widget.cpp.obj -MF CMakeFiles\glib.dir\glib\src\Widget.cpp.obj.d -o CMakeFiles\glib.dir\glib\src\Widget.cpp.obj -c C:\Users\aveox\Desktop\git\glib\glib\src\Widget.cpp
 
 CMakeFiles/glib.dir/glib/src/Widget.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/glib.dir/glib/src/Widget.cpp.i"
-	C:\PROGRA~1\msys64\ucrt64\bin\C__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\aveox\Desktop\git\glib\glib\src\Widget.cpp > CMakeFiles\glib.dir\glib\src\Widget.cpp.i
+	C:\PROGRA~1\msys64\ucrt64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\aveox\Desktop\git\glib\glib\src\Widget.cpp > CMakeFiles\glib.dir\glib\src\Widget.cpp.i
 
 CMakeFiles/glib.dir/glib/src/Widget.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/glib.dir/glib/src/Widget.cpp.s"
-	C:\PROGRA~1\msys64\ucrt64\bin\C__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\aveox\Desktop\git\glib\glib\src\Widget.cpp -o CMakeFiles\glib.dir\glib\src\Widget.cpp.s
+	C:\PROGRA~1\msys64\ucrt64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\aveox\Desktop\git\glib\glib\src\Widget.cpp -o CMakeFiles\glib.dir\glib\src\Widget.cpp.s
 
 CMakeFiles/glib.dir/glib/src/Event.cpp.obj: CMakeFiles/glib.dir/flags.make
 CMakeFiles/glib.dir/glib/src/Event.cpp.obj: CMakeFiles/glib.dir/includes_CXX.rsp
 CMakeFiles/glib.dir/glib/src/Event.cpp.obj: C:/Users/aveox/Desktop/git/glib/glib/src/Event.cpp
 CMakeFiles/glib.dir/glib/src/Event.cpp.obj: CMakeFiles/glib.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\aveox\Desktop\git\glib\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/glib.dir/glib/src/Event.cpp.obj"
-	C:\PROGRA~1\msys64\ucrt64\bin\C__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/glib.dir/glib/src/Event.cpp.obj -MF CMakeFiles\glib.dir\glib\src\Event.cpp.obj.d -o CMakeFiles\glib.dir\glib\src\Event.cpp.obj -c C:\Users\aveox\Desktop\git\glib\glib\src\Event.cpp
+	C:\PROGRA~1\msys64\ucrt64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/glib.dir/glib/src/Event.cpp.obj -MF CMakeFiles\glib.dir\glib\src\Event.cpp.obj.d -o CMakeFiles\glib.dir\glib\src\Event.cpp.obj -c C:\Users\aveox\Desktop\git\glib\glib\src\Event.cpp
 
 CMakeFiles/glib.dir/glib/src/Event.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/glib.dir/glib/src/Event.cpp.i"
-	C:\PROGRA~1\msys64\ucrt64\bin\C__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\aveox\Desktop\git\glib\glib\src\Event.cpp > CMakeFiles\glib.dir\glib\src\Event.cpp.i
+	C:\PROGRA~1\msys64\ucrt64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\aveox\Desktop\git\glib\glib\src\Event.cpp > CMakeFiles\glib.dir\glib\src\Event.cpp.i
 
 CMakeFiles/glib.dir/glib/src/Event.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/glib.dir/glib/src/Event.cpp.s"
-	C:\PROGRA~1\msys64\ucrt64\bin\C__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\aveox\Desktop\git\glib\glib\src\Event.cpp -o CMakeFiles\glib.dir\glib\src\Event.cpp.s
+	C:\PROGRA~1\msys64\ucrt64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\aveox\Desktop\git\glib\glib\src\Event.cpp -o CMakeFiles\glib.dir\glib\src\Event.cpp.s
 
 # Object files for target glib
 glib_OBJECTS = \

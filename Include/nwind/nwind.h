@@ -24,10 +24,15 @@ typedef struct Window Window, Window_t, Wnd, Wnd_t;
 typedef void (*WindowKeyCallback)(Window *wnd, int key, char pressed);
 typedef void (*WindowMouseButtonCallback)(Window *wnd, int key, char pressed);
 typedef void (*WindowMouseMoveCallback)(Window *wnd, int x, int y);
+typedef void (*WindowTimerCallback)(Window *wnd, WPARAM wParam);
 
 NWINDAPI void WindowSetKeyCallback(Window* wnd, WindowKeyCallback cb_func);
 NWINDAPI void WindowSetMouseButtonCallback(Window* wnd, WindowMouseButtonCallback cb_func);
 NWINDAPI void WindowSetMouseMoveCallback(Window* wnd, WindowMouseMoveCallback cb_func);
+NWINDAPI void WindowSetTimerCallback(Window *wnd, WindowTimerCallback cb_func);
+
+NWINDAPI UINT_PTR WindowStartTimer(Window *window, UINT interval);
+NWINDAPI WINBOOL WindowKillTimer(Window *window, UINT_PTR id);
 
 NWINDAPI Window* WindowCreate(const int width, const int height, const char* window_name);
 NWINDAPI void WindowDestroy(Window* wnd);

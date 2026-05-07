@@ -11,9 +11,14 @@
 
 struct TIMER_ENTRY{
     UINT_PTR id;
+    void* user_data;
     on_timer_function function;
-    //ClassWindow *owner; ????
 };typedef TIMER_ENTRY TIMER_ENTRY;
+
+struct TIMER_ENTRY_ARRTYPE{
+    TIMER_ENTRY *array;
+    int array_count;
+};typedef TIMER_ENTRY_ARRTYPE TIMER_ENTRY_ARRTYPE;
 
 namespace Mouse{
     inline position pos;
@@ -23,6 +28,7 @@ namespace Keyboard{
     inline int key;
 }
 
+/*======*/
 #define WE_MAX 10
 WindowEntry WE_array[WE_MAX];
 int WE_array_count = 0;
@@ -55,6 +61,7 @@ void UnregWindow(Window *native){
     }
     return;
 }
+/*======*/
 
 void mouse_button_callback(Window* wnd, int button, char pressed){
     Mouse::button = button;
@@ -123,16 +130,15 @@ void keyboard_callback(Window *window, int key, char pressed){
     return;
 }
 
-void timer_callback(Window *window, WPARAM wParam/*= id*/){
+void timer_callback(Window *window, WPARAM wParam/*= id*/){ //calls by nwind
 
-    //TODO: Logic
     CWindow *classwindow = findwindow(window);
 
     if(!classwindow) return;
 
-    on_timer_function function = classwindow->find_timer_function(wParam);
+    TIMER_ENTRY *te_ptr = classwindow->find_timer_function_TE(wParam);
 
-    if(function) function(window, nullptr);
+    if(te_ptr->function) te_ptr->function(te_ptr->user_data);
 
     return;
 }
@@ -146,6 +152,7 @@ ClassWindow::ClassWindow(const int width, const int height):window(nullptr), roo
     WindowSetMouseButtonCallback(window, mouse_button_callback);
     WindowSetMouseMoveCallback(window, mouse_move_callback);
     WindowSetKeyCallback(window, keyboard_callback);
+    WindowSetTimerCallback(window, timer_callback);
 }
 
 ClassWindow::~ClassWindow(){
@@ -197,8 +204,46 @@ Widget* ClassWindow::get_focused(void){
 }
 
 //TODO!
-void ClassWindow::regont_function(on_timer_function function){}
+void ClassWindow::regont_function(on_timer_function function, void* user_data/*= will be in function's parameter*/, UINT interval_ms){ //07.05.2026
+    if (!function)return;
 
-void ClassWindow::delont_function(on_timer_function function){}
+    UINT_PTR id = WindowStartTimer(window, interval_ms);
 
-on_timer_function ClassWindow::find_timer_function(WPARAM wParam){}
+    TIMER_ENTRY *temp = new TIMER_ENTRY [TE.array_count + 1]; //create buff
+
+    for (int i = 0; i < TE.array_count; ++i){ //copy
+        temp[i] = TE.array[i];
+    }
+
+    temp[TE.array_count] = {id, user_data, function}; //add new
+    ++TE.array_count;
+
+    delete[] TE.array; //delete old
+
+    TE.array = temp; //set new
+    return;
+}
+
+void ClassWindow::delont_function(on_timer_function function){ //<====
+    if (!TE.array || !function)return;
+
+    TIMER_ENTRY *temp = new TIMER_ENTRY [TE.array_count - 1];
+
+    for (int i = 0, j = 0; i < TE.array_count; ++i){
+    }
+    return;
+}
+
+on_timer_function ClassWindow::find_timer_function(WPARAM wParam){
+    for (int i = 0; i < TE.array_count; ++i){
+        if (TE.array[i].id == (UINT_PTR)wParam)return TE.array[i].function;
+    }
+    return nullptr;
+}
+
+TIMER_ENTRY* ClassWindow::find_timer_function_TE(WPARAM wParam){
+    for (int i = 0; i < TE.array_count; ++i){
+        if (TE.array[i].id == (UINT_PTR)wParam)return &TE.array[i];
+    }
+    return nullptr;
+}

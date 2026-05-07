@@ -1,0 +1,20 @@
+[
+{
+  "directory": "C:/Users/aveox/Desktop/git/glib/build",
+  "command": "C:\\PROGRA~1\\msys64\\ucrt64\\bin\\g++.exe  @CMakeFiles/glib.dir/includes_CXX.rsp -g -o CMakeFiles\\glib.dir\\glib\\src\\ClassWindow.cpp.obj -c C:\\Users\\aveox\\Desktop\\git\\glib\\glib\\src\\ClassWindow.cpp",
+  "file": "C:/Users/aveox/Desktop/git/glib/glib/src/ClassWindow.cpp",
+  "output": "CMakeFiles/glib.dir/glib/src/ClassWindow.cpp.obj"
+},
+{
+  "directory": "C:/Users/aveox/Desktop/git/glib/build",
+  "command": "C:\\PROGRA~1\\msys64\\ucrt64\\bin\\g++.exe  @CMakeFiles/glib.dir/includes_CXX.rsp -g -o CMakeFiles\\glib.dir\\glib\\src\\Widget.cpp.obj -c C:\\Users\\aveox\\Desktop\\git\\glib\\glib\\src\\Widget.cpp",
+  "file": "C:/Users/aveox/Desktop/git/glib/glib/src/Widget.cpp",
+  "output": "CMakeFiles/glib.dir/glib/src/Widget.cpp.obj"
+},
+{
+  "directory": "C:/Users/aveox/Desktop/git/glib/build",
+  "command": "C:\\PROGRA~1\\msys64\\ucrt64\\bin\\g++.exe  @CMakeFiles/glib.dir/includes_CXX.rsp -g -o CMakeFiles\\glib.dir\\glib\\src\\Event.cpp.obj -c C:\\Users\\aveox\\Desktop\\git\\glib\\glib\\src\\Event.cpp",
+  "file": "C:/Users/aveox/Desktop/git/glib/glib/src/Event.cpp",
+  "output": "CMakeFiles/glib.dir/glib/src/Event.cpp.obj"
+}
+]
