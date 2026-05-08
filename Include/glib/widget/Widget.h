@@ -14,6 +14,8 @@ GLIBAPI class Widget{
     Window *association;
     rect_t bound;
 
+    position **random_bound;
+
     friend position get_real_position(Widget *widget);
     bool contains(position pos);
 
