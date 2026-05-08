@@ -2,6 +2,8 @@
 #include "../../include/glib/widget/Widget.h"
 #include "../../include/nwind/nwind.h"
 
+#include <stdio.h>
+
 #ifdef DEBUG
 #include <iostream>
 #endif
@@ -71,7 +73,7 @@ void mouse_button_callback(Window* wnd, int button, char pressed){
     Mouse::pos.x = p.x;
     Mouse::pos.y = p.y;
     
-    #ifdef DEBUG
+    #ifdef DEBUG_MOUSE
     std::cout << "Mouse click at (" << Mouse::pos.x << ", " << Mouse::pos.y << "); button = " << button << std::endl;
     #endif
     //go to end children (tree parsing)
@@ -95,7 +97,7 @@ void mouse_move_callback(Window *wnd, int x, int y){
     Mouse::pos.x = p.x;
     Mouse::pos.y = p.y;
     
-    #ifdef DEBUG
+    #ifdef DEBUG_MOUSE
     std::cout << "Mouse has been moved at (" << Mouse::pos.x << ", " << Mouse::pos.y << "); key = " << key << std::endl;
     #endif
     //go to end children (tree parsing)
@@ -131,11 +133,18 @@ void keyboard_callback(Window *window, int key, char pressed){
 
 void timer_callback(Window *window, WPARAM wParam/*= id*/){ //calls by nwind
 
+    
+
     CWindow *classwindow = findwindow(window);
 
     if(!classwindow) return;
 
     TIMER_ENTRY *te_ptr = classwindow->find_timer_function_TE(wParam);
+    
+    #ifdef TIMER_DEBUG
+    printf("timer_callback(wParam): \n%d \n", (WPARAM)wParam);
+    printf("te_ptr = %d\n", te_ptr);
+    #endif
 
     if(te_ptr && te_ptr->function) te_ptr->function(te_ptr->user_data);
 
@@ -206,8 +215,8 @@ Widget* ClassWindow::get_focused(void){
 void ClassWindow::regont_function(on_timer_function function, void* user_data/*= will be in function's parameter*/, UINT interval_ms){ //07.05.2026
     if (!function)return;
 
-    UINT_PTR id = WindowStartTimer(window, interval_ms);
-
+    UINT_PTR id = WindowStartTimer(window, interval_ms, nullptr);
+    
     TIMER_ENTRY *temp = new TIMER_ENTRY [TE.array_count + 1]; //create buff
 
     for (int i = 0; i < TE.array_count; ++i){ //copy
@@ -220,6 +229,15 @@ void ClassWindow::regont_function(on_timer_function function, void* user_data/*=
     delete[] TE.array; //delete old
 
     TE.array = temp; //set new
+
+    //DEBUG
+    #ifdef TIMER_DEBUG
+    printf("register_on_timer_func (id):\n %d\n", id);
+
+    for (int i = 0; i < TE.array_count; ++i){
+        printf("(TE id):\n %d\n", TE.array[i].id);
+    }
+    #endif
     return;
 }
 
@@ -250,7 +268,7 @@ on_timer_function ClassWindow::find_timer_function(WPARAM wParam){
     return nullptr;
 }
 
-TIMER_ENTRY* ClassWindow::find_timer_function_TE(WPARAM wParam){
+TIMER_ENTRY* ClassWindow::find_timer_function_TE(WPARAM wParam /*= id*/){
     for (int i = 0; i < TE.array_count; ++i){
         if (TE.array[i].id == (UINT_PTR)wParam)return &TE.array[i];
     }
