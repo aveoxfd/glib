@@ -16,5 +16,6 @@ If the function fails to create a timer, the return value is zero. To get extend
 #include "../../include/glib/ClassWindow.h"
 
 static void CALLBACK GlobalTimerProc(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime){
+    //PostMessage();
     //...
 }
