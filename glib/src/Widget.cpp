@@ -15,71 +15,97 @@ position get_real_position(Widget *widget){
     return real_position;
 }
 
-bool point_in_polygon(position point, Body body){ //point in body
+//bool point_in_polygon(position point, Body body){ //point in body
+//
+//    /*
+//    y = kx + b;
+//    b = y - kx;
+//    k = y/x;
+//    x = -b/k;
+//    */
+//    bool inside = false;
+//
+//    for (int i = 1; i < body.nodes_count; ++i){
+//
+//        position v1 = { body.center.x + body.nodes[i-1].x, body.center.y + body.nodes[i-1].y };
+//        position v2 = { body.center.x + body.nodes[i].x,   body.center.y + body.nodes[i].y };
+//
+//        position point1 = { v1.x - point.x, v1.y - point.y };
+//        position point2 = { v2.x - point.x, v2.y - point.y };
+//
+//        if ((point1.y > 0) != (point2.y > 0)) {
+//
+//            double x_intersect;
+//
+//            if (point2.x == point1.x) {
+//
+//                x_intersect = point1.x;
+//
+//            } else {
+//
+//                double k = (point2.y - point1.y) / (point2.x - point1.x);
+//
+//                double b = point1.y - k * point1.x;
+//
+//                x_intersect = -b / k;
+//            }
+//
+//            if (x_intersect > 0) {
+//                inside = !inside;
+//            }
+//        }
+//    }
+//
+//    if (body.nodes_count > 1) {
+//        position v1 = { body.center.x + body.nodes[body.nodes_count-1].x,
+//            body.center.y + body.nodes[body.nodes_count-1].y };
+//        position v2 = { body.center.x + body.nodes[0].x, 
+//            body.center.y + body.nodes[0].y };
+//
+//        position point1 = { v1.x - point.x, v1.y - point.y };
+//        position point2 = { v2.x - point.x, v2.y - point.y };
+//
+//        point1 = { point1.x - point.x, point1.y - point.y };
+//        point2 = { point2.x - point.x, point2.y - point.y };
+//
+//        if ((point1.y > 0) != (point2.y > 0)) {
+//
+//            double x_intersect;
+//
+//            if (point2.x == point1.x) {
+//                x_intersect = point1.x;
+//            }
+//
+//            else {
+//                double k = (point2.y - point1.y) / (point2.x - point1.x);
+//                double b = point1.y - k * point1.x;
+//                x_intersect = -b / k;
+//            }
+//
+//            if (x_intersect > 0) {
+//                inside = !inside;
+//            }
+//        }
+//    }
+//    return inside;
+//}
 
-    /*
-    y = kx + b;
-    b = y - kx;
-    k = y/x;
-    x = -b/k;
-    */
+
+static bool point_in_polygon(position p, const Body& body) {
+    int n = body.nodes_count;
+    if (n < 3) return false;
+
     bool inside = false;
+    for (int i = 0, j = n - 1; i < n; j = i++) {
 
-    for (int i = 1; i < body.nodes_count; ++i){
+        double x1 = body.center.x + body.nodes[i].x;
+        double y1 = body.center.y + body.nodes[i].y;
+        double x2 = body.center.x + body.nodes[j].x;
+        double y2 = body.center.y + body.nodes[j].y;
 
-        position v1 = { body.center.x + body.nodes[i-1].x, body.center.y + body.nodes[i-1].y };
-        position v2 = { body.center.x + body.nodes[i].x,   body.center.y + body.nodes[i].y };
-
-        position point1 = { v1.x - point.x, v1.y - point.y };
-        position point2 = { v2.x - point.x, v2.y - point.y };
-
-        if ((point1.y > 0) != (point2.y > 0)) {
-
-            double x_intersect;
-
-            if (point2.x == point1.x) {
-
-                x_intersect = point1.x;
-
-            } else {
-
-                double k = (point2.y - point1.y) / (point2.x - point1.x);
-
-                double b = point1.y - k * point1.x;
-
-                x_intersect = -b / k;
-            }
-
-            if (x_intersect > 0) {
-                inside = !inside;
-            }
-        }
-    }
-
-    if (body.nodes_count > 1) {
-        position point1 = body.nodes[body.nodes_count-1];
-        position point2 = body.nodes[0];
-
-        point1 = { point1.x - point.x, point1.y - point.y };
-        point2 = { point2.x - point.x, point2.y - point.y };
-
-        if ((point1.y > 0) != (point2.y > 0)) {
-
-            double x_intersect;
-
-            if (point2.x == point1.x) {
-                x_intersect = point1.x;
-            }
-
-            else {
-                double k = (point2.y - point1.y) / (point2.x - point1.x);
-                double b = point1.y - k * point1.x;
-                x_intersect = -b / k;
-            }
-
-            if (x_intersect > 0) {
-                inside = !inside;
-            }
+        if (((y1 > p.y) != (y2 > p.y)) &&
+            (p.x < (x2 - x1) * (p.y - y1) / (y2 - y1) + x1)) {
+            inside = !inside;
         }
     }
     return inside;

@@ -18,10 +18,8 @@ GLIBAPI class Widget{
 
     friend position get_real_position(Widget *widget);
     
-    protected: 
-    bool contains(position pos);
-
     public:
+    bool contains(position pos);
     Widget();
     Widget(rect_t bound, Widget *parent = nullptr, Body rBound = {0});
     virtual ~Widget() = default;
