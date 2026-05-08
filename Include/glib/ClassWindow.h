@@ -41,8 +41,8 @@ GLIBAPI class ClassWindow{
     void start_cycle();
     void set_focus(Widget *widget);
     Widget *get_focused(void);
-    void register_ontimer_function(on_timer_function function, void* user_data, UINT interval_ms, TIMERPROC other); //register on_timer_function
-    void delete_ontimer_function(on_timer_function function);                                                       //delete on_timer_function
+    void register_ontimer_function(on_timer_function function, void* user_data, UINT interval_ms, TIMERPROC other = nullptr); //register on_timer_function
+    void delete_ontimer_function(on_timer_function function);                                                                 //delete on_timer_function
     on_timer_function find_timer_function(WPARAM wParam);
     TIMER_ENTRY* find_timer_function_TE(WPARAM wParam);
 };

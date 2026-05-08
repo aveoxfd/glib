@@ -214,7 +214,7 @@ Widget* ClassWindow::get_focused(void){
 //TODO!
 
 //set window its own timer processor (WM_TIMER)
-void ClassWindow::register_ontimer_function(on_timer_function function, void* user_data/*= will be in function's parameter*/, UINT interval_ms, TIMERPROC other = nullptr){ //07.05.2026
+void ClassWindow::register_ontimer_function(on_timer_function function, void* user_data/*= will be in function's parameter*/, UINT interval_ms, TIMERPROC other){ //07.05.2026
     if (!function)return;
 
     UINT_PTR id = WindowStartTimer(window, interval_ms, nullptr);
