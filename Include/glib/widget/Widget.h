@@ -17,6 +17,8 @@ GLIBAPI class Widget{
     Body body; //TODO
 
     friend position get_real_position(Widget *widget);
+    
+    protected: 
     bool contains(position pos);
 
     public:
