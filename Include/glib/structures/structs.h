@@ -5,5 +5,6 @@
 #include "rectangle.h"
 #include "size.h"
 #include "WindowEntry.h"
+#include "body.h"
 
 #endif

@@ -3,10 +3,6 @@
 #include <iostream>
 #include <new>
 
-/*
-TODO: FIX
-*/
-
 #define POINTER 0
 #define VIRTUAL 1
 
@@ -19,13 +15,96 @@ position get_real_position(Widget *widget){
     return real_position;
 }
 
-bool Widget::contains(position pos){
-    position real = get_real_position(this); //real postion of widget in depended window;
-    return pos.x >= real.x && pos.x < bound.size.width + real.x 
-        && pos.y >= real.y && pos.y < bound.size.height + real.y;
+bool point_in_polygon(position point, Body body){ //point in body
+
+    /*
+    y = kx + b;
+    b = y - kx;
+    k = y/x;
+    x = -b/k;
+    */
+    bool inside = false;
+
+    for (int i = 1; i < body.nodes_count; ++i){
+
+        position v1 = { body.center.x + body.nodes[i-1].x, body.center.y + body.nodes[i-1].y };
+        position v2 = { body.center.x + body.nodes[i].x,   body.center.y + body.nodes[i].y };
+
+        position point1 = { v1.x - point.x, v1.y - point.y };
+        position point2 = { v2.x - point.x, v2.y - point.y };
+
+        if ((point1.y > 0) != (point2.y > 0)) {
+
+            double x_intersect;
+
+            if (point2.x == point1.x) {
+
+                x_intersect = point1.x;
+
+            } else {
+
+                double k = (point2.y - point1.y) / (point2.x - point1.x);
+
+                double b = point1.y - k * point1.x;
+
+                x_intersect = -b / k;
+            }
+
+            if (x_intersect > 0) {
+                inside = !inside;
+            }
+        }
+    }
+
+    if (body.nodes_count > 1) {
+        position point1 = body.nodes[body.nodes_count-1];
+        position point2 = body.nodes[0];
+
+        point1 = { point1.x - point.x, point1.y - point.y };
+        point2 = { point2.x - point.x, point2.y - point.y };
+
+        if ((point1.y > 0) != (point2.y > 0)) {
+
+            double x_intersect;
+
+            if (point2.x == point1.x) {
+                x_intersect = point1.x;
+            }
+
+            else {
+                double k = (point2.y - point1.y) / (point2.x - point1.x);
+                double b = point1.y - k * point1.x;
+                x_intersect = -b / k;
+            }
+
+            if (x_intersect > 0) {
+                inside = !inside;
+            }
+        }
+    }
+    return inside;
 }
 
-Widget::Widget(rect_t rectangle_bound, Widget *parent):
+bool Widget::contains(position pos /*- already gobal*/){
+    position real = get_real_position(this); //real postion of widget in depended window;
+
+    if (pos.x < real.x || pos.x >= real.x + bound.size.width ||
+        pos.y < real.y || pos.y >= real.y + bound.size.height)return false;
+    //return pos.x >= real.x && pos.x < bound.size.width + real.x 
+    //    && pos.y >= real.y && pos.y < bound.size.height + real.y;
+    //...
+
+    position local_point = { pos.x - real.x, pos.y - real.y };
+
+    if (body.nodes && body.nodes_count > 0) {
+        return point_in_polygon(local_point, body);
+    }
+
+    return true;
+}
+
+Widget::Widget(rect_t rectangle_bound, Widget *parent, Body rBound):
+body(rBound),
 parent(parent), 
 children(nullptr),
 children_count(0),
