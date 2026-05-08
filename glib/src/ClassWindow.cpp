@@ -212,7 +212,7 @@ Widget* ClassWindow::get_focused(void){
 }
 
 //TODO!
-void ClassWindow::regont_function(on_timer_function function, void* user_data/*= will be in function's parameter*/, UINT interval_ms){ //07.05.2026
+void ClassWindow::register_ontimer_function(on_timer_function function, void* user_data/*= will be in function's parameter*/, UINT interval_ms){ //07.05.2026
     if (!function)return;
 
     UINT_PTR id = WindowStartTimer(window, interval_ms, nullptr);
@@ -241,7 +241,7 @@ void ClassWindow::regont_function(on_timer_function function, void* user_data/*=
     return;
 }
 
-void ClassWindow::delont_function(on_timer_function function){ //<==== may have a bug
+void ClassWindow::delete_ontimer_function(on_timer_function function){ //<==== may have a bug
     if (!TE.array || !function) return;
 
     UINT_PTR kill_id = 0;
