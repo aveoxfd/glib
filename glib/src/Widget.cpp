@@ -81,8 +81,8 @@ bool Widget::contains(position pos /*- already gobal*/){
     return true;
 }
 
-Widget::Widget(rect_t rectangle_bound, Widget *parent, Body rBound):
-body(rBound),
+Widget::Widget(rect_t rectangle_bound, Widget *parent, Body body):
+body(body),
 parent(parent), 
 children(nullptr),
 children_count(0),
