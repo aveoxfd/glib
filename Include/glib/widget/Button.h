@@ -22,7 +22,9 @@ class Button : public Widget{
     void *user_data_update = nullptr;
 
     public:
-    Button(rect_t bound, Widget *parent = nullptr, Body body = {}) : Widget(bound, body, parent) {}
+    Button(rect_t bound, Widget *parent = nullptr): Widget(bound, parent) {}
+
+    Button(Body body, Widget *parent = nullptr): Widget(body, parent) {}
 
     void on_click(event_function e = nullptr, void *user_data = nullptr){
         on_click_function = e;

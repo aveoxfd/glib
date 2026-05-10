@@ -73,7 +73,7 @@ bool Widget::contains(position point) {
     return true;
 }
 
-Widget::Widget(rect_t bound, Body body, Widget *parent):
+Widget::Widget(rect_t bound, Widget *parent):
 body(body),
 parent(parent), 
 children(nullptr),
@@ -85,6 +85,29 @@ bound(bound){
         this->bound.size.width = 100;
     }
     if (this->parent)parent->add_child(this);
+}
+
+Widget::Widget(Body body, Widget *parent):
+body(body),
+parent(parent),
+children(nullptr),
+children_count(0),
+association(nullptr)
+{
+    int min_x = body.nodes[0].x, max_x = body.nodes[0].x;
+    int min_y = body.nodes[0].y, max_y = body.nodes[0].y;
+    for (int i = 1; i < body.nodes_count; i++) {
+        if (body.nodes[i].x < min_x) min_x = body.nodes[i].x;
+        if (body.nodes[i].x > max_x) max_x = body.nodes[i].x;
+        if (body.nodes[i].y < min_y) min_y = body.nodes[i].y;
+        if (body.nodes[i].y > max_y) max_y = body.nodes[i].y;
+    }
+    bound = {
+        { body.center.x + min_x, body.center.y + min_y },
+        { max_x - min_x, max_y - min_y }
+    };
+
+    if (this->parent) parent->add_child(this);
 }
 //Widget::~Widget() {
 //    //for (int i = 0; i < children_count; ++i) {

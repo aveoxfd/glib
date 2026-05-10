@@ -21,7 +21,8 @@ GLIBAPI class Widget{
     public:
     bool contains(position pos);
     Widget();
-    Widget(rect_t bound = {0}, Body body = {0}, Widget *parent = nullptr);
+    Widget(rect_t bound = {0}, Widget *parent = nullptr);
+    Widget(Body body, Widget *parent = nullptr);
     virtual ~Widget() = default;
     Widget* find_widget(position pos);
     void add_child(Widget *child_widget);
