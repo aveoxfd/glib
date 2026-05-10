@@ -81,7 +81,7 @@ void mouse_button_callback(Window* wnd, int button, char pressed){
     if (window == nullptr)return;
     Widget* root = window->get_root_widget();
     if(root == nullptr)return;
-    Widget* target = root->find_widget(Mouse::pos);
+    Widget* target = root->find_widget(Mouse::pos/*mouse global position*/);
     if(target == nullptr)return;
 
     window->set_focus(target);
@@ -106,7 +106,7 @@ void mouse_move_callback(Window *wnd, int x, int y){
     if (class_window == nullptr)return;
     Widget* root = class_window->get_root_widget();
     if(root == nullptr)return;
-    Widget* target = root->find_widget(Mouse::pos);
+    Widget* target = root->find_widget(Mouse::pos/*mouse global position*/);
     //if(target == nullptr)return;
 
     if(target != last_hovered || target == nullptr){
@@ -210,8 +210,6 @@ void ClassWindow::set_focus(Widget *widget){
 Widget* ClassWindow::get_focused(void){
     return focused;
 }
-
-//TODO!
 
 //set window its own timer processor (WM_TIMER)
 void ClassWindow::register_ontimer_function(on_timer_function function, void* user_data/*= will be in function's parameter*/, UINT interval_ms, TIMERPROC other){ //07.05.2026
