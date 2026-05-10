@@ -60,37 +60,32 @@ bool point_in_polygon(position point, Body body) {
     return inside;
 }
 
-bool Widget::contains(position point /*- already global*/){
-    position real = get_real_position(this); //real postion of widget in depended window;
+bool Widget::contains(position point) {
+    position real = get_real_position(this);
 
-    if (point.x < real.x || point.x >= real.x + bound.size.width ||
-        point.y < real.y || point.y >= real.y + bound.size.height)return false;
-    //return pos.x >= real.x && pos.x < bound.size.width + real.x 
-    //    && pos.y >= real.y && pos.y < bound.size.height + real.y;
-    //...
+    if (point.x <  real.x || point.x >= real.x + bound.size.width ||
+        point.y <  real.y || point.y >= real.y + bound.size.height)
+        return false;
 
-    position local_point = {
-        point.x - real.x - bound.size.width  / 2,
-        point.y - real.y - bound.size.height / 2
-    };
-
-    if (body.nodes && body.nodes_count > 0) {
-        return point_in_polygon(local_point, body);
-    }
+    if (body.nodes && body.nodes_count > 0)
+        return point_in_polygon(point, body);
 
     return true;
 }
 
-Widget::Widget(rect_t rectangle_bound, Widget *parent, Body body):
+Widget::Widget(rect_t bound, Body body, Widget *parent):
 body(body),
 parent(parent), 
 children(nullptr),
 children_count(0),
 association(nullptr),
-bound(rectangle_bound){
+bound(bound){
+    if ((this->bound.size.height * this->bound.size.width) == 0 && !this->body.nodes){
+        this->bound.size.height = 100;
+        this->bound.size.width = 100;
+    }
     if (this->parent)parent->add_child(this);
 }
-
 //Widget::~Widget() {
 //    //for (int i = 0; i < children_count; ++i) {
 //    //    delete children[i];
