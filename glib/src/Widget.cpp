@@ -26,25 +26,24 @@ bool point_in_polygon(position point, Body body) {
     for (int i = 0; i < n; ++i) {
         int j = (i + 1) % n;
 
+        //nodes real position
         double x1 = body.center.x + body.nodes[i].x;
         double y1 = body.center.y + body.nodes[i].y;
         double x2 = body.center.x + body.nodes[j].x;
         double y2 = body.center.y + body.nodes[j].y;
 
-        double px = point.x;
-        double py = point.y;
-        double rx1 = x1 - px;
-        double ry1 = y1 - py;
-        double rx2 = x2 - px;
-        double ry2 = y2 - py;
+        double rx1 = x1 - point.x;
+        double ry1 = y1 - point.y;
+        double rx2 = x2 - point.x;
+        double ry2 = y2 - point.y;
 
-        if ((ry1 > 0) != (ry2 > 0)) {
+        if ((ry1 > 0) != (ry2 > 0)) { //if the line intersects Ox
             double x_intersect;
             if (rx2 == rx1) {
                 x_intersect = rx1;
             } 
             
-            else {
+            else { //where
 
                 double k = (ry2 - ry1) / (rx2 - rx1);
                 double b = ry1 - k * rx1;
