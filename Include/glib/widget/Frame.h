@@ -4,7 +4,7 @@
 #include "Widget.h"
 class Frame : public Widget {
     public:
-    Frame(rect_t bound, Widget *parent = nullptr): Widget(bound, parent){}
+    Frame(rect_t bound, Widget *parent = nullptr): Widget(bound, {0}, parent){}
     using render_function = void(*)(Frame *); //background
 
     render_function render_func;
