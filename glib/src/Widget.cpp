@@ -3,9 +3,6 @@
 #include <iostream>
 #include <new>
 
-#define POINTER 0
-#define VIRTUAL 1
-
 position get_real_position(Widget *widget){
     position real_position = widget->bound.pos;
     for (Widget *curr = widget->parent; curr != nullptr; curr = curr->parent){
@@ -63,16 +60,19 @@ bool point_in_polygon(position point, Body body) {
     return inside;
 }
 
-bool Widget::contains(position pos /*- already gobal*/){
+bool Widget::contains(position point /*- already global*/){
     position real = get_real_position(this); //real postion of widget in depended window;
 
-    if (pos.x < real.x || pos.x >= real.x + bound.size.width ||
-        pos.y < real.y || pos.y >= real.y + bound.size.height)return false;
+    if (point.x < real.x || point.x >= real.x + bound.size.width ||
+        point.y < real.y || point.y >= real.y + bound.size.height)return false;
     //return pos.x >= real.x && pos.x < bound.size.width + real.x 
     //    && pos.y >= real.y && pos.y < bound.size.height + real.y;
     //...
 
-    position local_point = { pos.x - real.x, pos.y - real.y };
+    position local_point = {
+        point.x - real.x - bound.size.width  / 2,
+        point.y - real.y - bound.size.height / 2
+    };
 
     if (body.nodes && body.nodes_count > 0) {
         return point_in_polygon(local_point, body);
